@@ -1,7 +1,6 @@
 package com.zhenhui.demo.sparklers.dal;
 
 import com.zhenhui.demo.sparklers.Application;
-import com.zhenhui.demo.sparklers.dal.jooq.tables.User;
 import com.zhenhui.demo.sparklers.dal.jooq.tables.records.UserRecord;
 import org.jooq.DSLContext;
 import org.junit.Test;
