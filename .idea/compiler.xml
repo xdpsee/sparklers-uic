@@ -10,5 +10,11 @@
         <module name="sparklers" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="bootstrap" target="1.8" />
+      <module name="sparklers" target="1.8" />
+      <module name="sparklers-parent" target="1.5" />
+      <module name="starters-parent" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
 </project>

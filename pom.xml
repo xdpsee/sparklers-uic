@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zhenhui.demo</groupId>
-    <artifactId>starters-parent</artifactId>
+    <artifactId>sparklers-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
