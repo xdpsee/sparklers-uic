@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.zhenhui.sparklers.boot.starter.SparkConfiguration
