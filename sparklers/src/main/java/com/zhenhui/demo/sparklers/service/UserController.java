@@ -49,7 +49,9 @@ public class UserController {
         final AsyncContext context = request.startAsync();
         context.setTimeout(10000);
 
-        createUser.execute(new Params(body.getPhone(), passwordEncoder.encode(body.getSecret()), body.getAuthorities()),
+        createUser.execute(new Params(body.getPhone()
+                , passwordEncoder.encode(body.getSecret())
+                , body.getAuthorities()),
             new DefaultObserver<Boolean>() {
                 @Override
                 public void onNext(Boolean success) {

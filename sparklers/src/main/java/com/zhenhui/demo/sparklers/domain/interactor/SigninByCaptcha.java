@@ -5,7 +5,6 @@ import javax.validation.constraints.NotNull;
 import com.zhenhui.demo.sparklers.domain.exception.UserNotFoundException;
 import com.zhenhui.demo.sparklers.domain.executor.PostExecutionThread;
 import com.zhenhui.demo.sparklers.domain.executor.ThreadExecutor;
-import com.zhenhui.demo.sparklers.domain.model.SocialType;
 import com.zhenhui.demo.sparklers.domain.model.User;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.security.Principal;
@@ -16,6 +15,9 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+/**
+ * exceptions: UserNotFoundException,
+ */
 @Component
 public class SigninByCaptcha extends UseCase<SigninByCaptcha.Params, String> {
 
@@ -40,13 +42,7 @@ public class SigninByCaptcha extends UseCase<SigninByCaptcha.Params, String> {
             if (null == user) {
                 emitter.onError(new UserNotFoundException(params.phone));
             } else {
-                Principal principal = new Principal();
-                principal.setUserId(user.getId());
-                principal.setPhone(user.getName());
-                principal.setAuthorities(user.getAuthorities());
-                principal.setType(SocialType.NONE);
-
-                emitter.onNext(tokenUtils.createToken(principal));
+                emitter.onNext(tokenUtils.createToken(Principal.fromUser(user)));
                 emitter.onComplete();
             }
         });

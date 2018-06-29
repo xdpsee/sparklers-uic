@@ -1,6 +1,7 @@
-package com.zhenhui.demo.sparklers;
+package com.zhenhui.demo.sparklers.usecase;
 
 import com.google.common.collect.Sets;
+import com.zhenhui.demo.sparklers.Application;
 import com.zhenhui.demo.sparklers.domain.exception.UserAlreadyExistException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser.Params;

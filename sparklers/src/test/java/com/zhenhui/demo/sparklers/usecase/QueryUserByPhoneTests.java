@@ -1,11 +1,11 @@
-package com.zhenhui.demo.sparklers;
+package com.zhenhui.demo.sparklers.usecase;
 
 import java.util.Optional;
 
 import com.google.common.collect.Sets;
+import com.zhenhui.demo.sparklers.Application;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser.Params;
-import com.zhenhui.demo.sparklers.domain.interactor.QueryUserById;
 import com.zhenhui.demo.sparklers.domain.interactor.QueryUserByPhone;
 import com.zhenhui.demo.sparklers.domain.model.User;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
@@ -22,17 +22,17 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
 @WebAppConfiguration
-public class QueryUserByIdTests {
+public class QueryUserByPhoneTests {
 
     @Autowired
     private UserRepository userRepository;
 
     @Test
     public void testUserAbsent() {
-        QueryUserById queryUserById = new QueryUserById(null, null, userRepository);
+        QueryUserByPhone queryUserByPhone = new QueryUserByPhone(null, null, userRepository);
 
         TestObserver<Optional<User>> testObserver = new TestObserver<>();
-        queryUserById.execute(1L, testObserver);
+        queryUserByPhone.execute("13812340000", testObserver);
 
         testObserver.assertResult(Optional.empty()).assertComplete();
     }

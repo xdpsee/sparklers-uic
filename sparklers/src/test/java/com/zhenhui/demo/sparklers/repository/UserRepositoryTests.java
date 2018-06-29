@@ -1,7 +1,8 @@
-package com.zhenhui.demo.sparklers;
+package com.zhenhui.demo.sparklers.repository;
 
 import java.util.List;
 
+import com.zhenhui.demo.sparklers.Application;
 import com.zhenhui.demo.sparklers.data.jooq.tables.records.UserRecord;
 import org.jooq.DSLContext;
 import org.junit.Test;
