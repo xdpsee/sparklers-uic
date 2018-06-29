@@ -1,16 +1,18 @@
 package com.zhenhui.demo.sparklers.data.repository;
 
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import com.zhenhui.demo.sparklers.dal.jooq.Tables;
-import com.zhenhui.demo.sparklers.dal.jooq.tables.records.UserRecord;
+import com.zhenhui.demo.sparklers.data.jooq.Tables;
+import com.zhenhui.demo.sparklers.data.jooq.tables.records.UserRecord;
 import com.zhenhui.demo.sparklers.domain.model.User;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
-import io.reactivex.Observable;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static com.zhenhui.demo.sparklers.data.jooq.tables.User.USER;
 
 @Component
 public class UserRepositoryImpl implements UserRepository {
@@ -19,28 +21,47 @@ public class UserRepositoryImpl implements UserRepository {
     private DSLContext context;
 
     @Override
-    public Observable<Optional<User>> getUser(long userId) {
+    public User getUser(long userId) {
 
-        return Observable.create((emitter) -> {
-            try {
-                final UserRecord record = context.selectFrom(Tables.USER)
-                    .where(Tables.USER.ID.eq(userId))
-                    .fetchOneInto(UserRecord.class);
+        final UserRecord record = context.selectFrom(Tables.USER)
+            .where(Tables.USER.ID.eq(userId))
+            .fetchOneInto(UserRecord.class);
 
-                User user = null;
-                if (record != null) {
-                    user = new User(1L, record.getName(), "", new HashSet<>());
-                }
+        return record != null ? fromRecord(record) : null;
+    }
 
-                emitter.onNext(Optional.ofNullable(user));
-            } catch (Exception e) {
-                emitter.onError(e);
-            }
-        });
+    @Override
+    public User getUser(String phone) {
+        final UserRecord record = context.selectFrom(Tables.USER)
+            .where(Tables.USER.PHONE.eq(phone))
+            .fetchOneInto(UserRecord.class);
 
+        return record != null ? fromRecord(record) : null;
+    }
+
+    @Override
+    public boolean createUser(String phone, String secret, Set<String> authorities) {
+        int rows = context.insertInto(USER)
+            .set(USER.PHONE, phone)
+            .set(USER.SECRET, secret)
+            .set(USER.NAME, "")
+            .set(USER.AVATAR, "")
+            .set(USER.AUTHORITIES, String.join(",", authorities))
+            .execute();
+        return rows == 1;
+    }
+
+    private User fromRecord(UserRecord record) {
+
+        if (record != null) {
+            return new User(record.getId()
+                , record.getName()
+                , record.getSecret()
+                , record.getAvatar()
+                , Arrays.stream(record.getAuthorities().split(",")).collect(Collectors.toSet()));
+        }
+
+        return null;
     }
 }
-
-
-
 

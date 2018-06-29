@@ -7,7 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
+import com.zhenhui.demo.sparklers.domain.executor.PostExecutionThread;
+import com.zhenhui.demo.sparklers.domain.executor.ThreadExecutor;
 import com.zhenhui.demo.sparklers.utils.ExceptionTranslator;
+import io.reactivex.schedulers.Schedulers;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
@@ -45,12 +48,20 @@ public class AppConfig {
     }
 
     @Bean
-    public Executor executor() {
-        return new ThreadPoolExecutor(8
-            , 32
-            , 30
+    public ThreadExecutor threadExecutor() {
+
+        final Executor executor = new ThreadPoolExecutor(64
+            , 128
+            , 60
             , TimeUnit.SECONDS
-            , new LinkedBlockingDeque<>(64));
+            , new LinkedBlockingDeque<>(128));
+
+        return command -> executor.execute(command);
+    }
+
+    @Bean
+    public PostExecutionThread postExecutionThread() {
+        return () -> Schedulers.from(threadExecutor());
     }
 
 }

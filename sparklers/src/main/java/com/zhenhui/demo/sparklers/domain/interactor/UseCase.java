@@ -1,42 +1,37 @@
 package com.zhenhui.demo.sparklers.domain.interactor;
 
-import java.util.concurrent.Executor;
-
 import com.google.common.base.Preconditions;
+import com.zhenhui.demo.sparklers.domain.executor.PostExecutionThread;
+import com.zhenhui.demo.sparklers.domain.executor.ThreadExecutor;
 import io.reactivex.Observable;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
+import io.reactivex.Observer;
 import io.reactivex.schedulers.Schedulers;
 
-public abstract class UseCase<T, R>{
+public abstract class UseCase<T, R> {
 
-    private final Executor threadExecutor;
-    private final CompositeDisposable disposables;
+    private final ThreadExecutor threadExecutor;
+    private final PostExecutionThread postExecutionThread;
 
-    public UseCase(Executor executor) {
-        this.threadExecutor = executor;
-        this.disposables = new CompositeDisposable();
+    UseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread) {
+        this.threadExecutor = threadExecutor;
+        this.postExecutionThread = postExecutionThread;
     }
 
-    public void execute(T params, DisposableObserver<R> observer) {
+    abstract Observable<R> buildObservable(T params);
+
+    public void execute(T params, Observer<R> observer) {
         Preconditions.checkNotNull(observer);
-        final Observable<R> observable = run(params)
-            .subscribeOn(Schedulers.from(threadExecutor));
-        addDisposable(observable.subscribeWith(observer));
-    }
+        final Observable<R> observable = this.buildObservable(params);
 
-    public void dispose() {
-        if (!disposables.isDisposed()) {
-            disposables.dispose();
+        if (threadExecutor != null) {
+            observable.subscribeOn(Schedulers.from(threadExecutor));
         }
-    }
 
-    private void addDisposable(Disposable disposable) {
-        Preconditions.checkNotNull(disposable);
-        Preconditions.checkNotNull(disposables);
-        disposables.add(disposable);
-    }
+        if (postExecutionThread != null) {
+            observable.observeOn(postExecutionThread.getScheduler());
+        }
 
-    protected abstract Observable<R> run(T params);
+        observable.subscribe(observer);
+    }
 }
+

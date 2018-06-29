@@ -1,7 +1,8 @@
-package com.zhenhui.demo.sparklers.dal;
+package com.zhenhui.demo.sparklers;
 
-import com.zhenhui.demo.sparklers.Application;
-import com.zhenhui.demo.sparklers.dal.jooq.tables.records.UserRecord;
+import java.util.List;
+
+import com.zhenhui.demo.sparklers.data.jooq.tables.records.UserRecord;
 import org.jooq.DSLContext;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,16 +11,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-import static com.zhenhui.demo.sparklers.dal.jooq.tables.User.USER;
+import static com.zhenhui.demo.sparklers.data.jooq.tables.User.USER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @SpringBootTest(classes = Application.class)
 @Transactional(transactionManager = "transactionManager")
 @RunWith(SpringJUnit4ClassRunner.class)
-public class UserTest {
+public class UserRepositoryTests {
 
     @Autowired
     DSLContext context;

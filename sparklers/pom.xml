@@ -14,7 +14,7 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-        <jooq.version>3.11.1</jooq.version>
+        <jooq.version>3.11.2</jooq.version>
     </properties>
 
     <dependencies>
@@ -57,9 +57,19 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq</artifactId>
             <version>${jooq.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
         </dependency>
 
         <dependency>
@@ -99,7 +109,7 @@
             <plugin>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
-                <version>3.11.1</version>
+                <version>${jooq.version}</version>
 
                 <executions>
                     <execution>
@@ -109,22 +119,13 @@
                     </execution>
                 </executions>
 
-                <dependencies>
-                    <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>5.1.43</version>
-                    </dependency>
-                </dependencies>
-
                 <configuration>
                     <jdbc>
                         <driver>com.mysql.jdbc.Driver</driver>
-                        <url>jdbc:mysql://localhost:3306/sparklers</url>
+                        <url>jdbc:mysql://localhost:3306/sparklers?useSSL=false</url>
                         <user>root</user>
                         <password>123456</password>
                     </jdbc>
-
                     <generator>
                         <database>
                             <name>org.jooq.meta.mysql.MySQLDatabase</name>
@@ -133,13 +134,16 @@
                             <inputSchema>sparklers</inputSchema>
                         </database>
                         <target>
-                            <packageName>com.zhenhui.demo.sparklers.dal.jooq</packageName>
-                            <directory>target/generated-sources/jooq</directory>
+                            <packageName>com.zhenhui.demo.sparklers.data.jooq</packageName>
+                            <directory>target/generated-sources</directory>
                         </target>
                     </generator>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>
+
+
+
+
