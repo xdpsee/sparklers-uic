@@ -1,14 +1,13 @@
 package com.zhenhui.demo.sparklers.service.results;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletResponse;
-
 import com.zhenhui.demo.sparklers.utils.JSONUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class Result<T> {
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class Result<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(Result.class);
 
@@ -36,7 +35,7 @@ public final class Result<T> {
             case NONE:
                 status = 200;
                 break;
-            case FORMAT_INVALID:
+            case INVALID_INPUT:
             case DATA_EXISTED:
             case DATA_INVALID:
                 status = 400;

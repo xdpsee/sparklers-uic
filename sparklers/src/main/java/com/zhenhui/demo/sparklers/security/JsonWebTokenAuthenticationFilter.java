@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zhenhui.demo.sparklers.data.repository.BlacklistRepositoryImpl;
 import com.zhenhui.demo.sparklers.security.exception.ExpiresTokenException;
 import com.zhenhui.demo.sparklers.security.exception.InvalidTokenException;
 import com.zhenhui.demo.sparklers.service.results.Error;
@@ -26,18 +27,22 @@ public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenUtils tokenUtils;
 
+    @Autowired
+    private BlacklistRepositoryImpl blacklistRepository;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request
         , HttpServletResponse response
         , FilterChain chain) throws ServletException, IOException {
 
         final String token = parseToken(request);
-        if (token != null) {
+        if (token != null && !blacklistRepository.isBlocked(token)) {
             try {
                 Principal principal = tokenUtils.parseToken(token);
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
                     JsonWebTokenAuthentication authentication = new JsonWebTokenAuthentication(principal);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
+                    request.setAttribute("token", token);
                 }
             } catch (Exception e) {
                 if (e instanceof ExpiresTokenException) {

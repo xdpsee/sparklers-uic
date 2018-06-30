@@ -1,5 +1,6 @@
-package com.zhenhui.demo.sparklers.service;
+package com.zhenhui.demo.sparklers.data.repository;
 
+import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Component
-public class CaptchaManager implements InitializingBean {
+public class CaptchaRepositoryImpl implements CaptchaRepository, InitializingBean {
 
     @Autowired
     private CacheManager cacheManager;
@@ -25,6 +26,7 @@ public class CaptchaManager implements InitializingBean {
         cache = cacheManager.getCache("captchas");
     }
 
+    @Override
     public String createCaptcha(String phone, boolean create) {
 
         String captcha;
@@ -39,6 +41,7 @@ public class CaptchaManager implements InitializingBean {
         return captcha;
     }
 
+    @Override
     public String lookupCaptcha(String phone) {
         Cache.ValueWrapper element = cache.get(phone);
         if (element != null) {
@@ -48,10 +51,12 @@ public class CaptchaManager implements InitializingBean {
         return null;
     }
 
+    @Override
     public void invalidCaptcha(String phone) {
         cache.evict(phone);
     }
 
+    @Override
     public void removeAll() {
         cache.clear();
     }

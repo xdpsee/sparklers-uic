@@ -6,6 +6,9 @@ import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Sets;
+import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
+import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
 import com.zhenhui.demo.sparklers.domain.exception.UserAlreadyExistException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser.Params;
@@ -47,11 +50,12 @@ public class UserController {
                            HttpServletResponse response) {
 
         final AsyncContext context = request.startAsync();
-        context.setTimeout(10000);
+        context.setTimeout(6000);
 
         createUser.execute(new Params(body.getPhone()
                         , passwordEncoder.encode(body.getSecret())
-                        , body.getAuthorities()),
+                        , Sets.newHashSet("USER")
+                        , body.getCaptcha()),
                 new DefaultObserver<Boolean>() {
                     @Override
                     public void onNext(Boolean success) {
@@ -59,8 +63,14 @@ public class UserController {
                     }
 
                     @Override
-                    public void onError(Throwable throwable) {
-                        if (throwable instanceof UserAlreadyExistException) {
+                    public void onError(Throwable e) {
+                        if (e instanceof CaptchaExpireException) {
+                            Result.newBuilder().error(Error.DATA_INVALID).message("验证码无效或已过期")
+                                    .write(response);
+                        } else if (e instanceof CaptchaMismatchException) {
+                            Result.newBuilder().error(Error.DATA_INVALID).message("验证码错误, 不匹配")
+                                    .write(response);
+                        } else if (e instanceof UserAlreadyExistException) {
                             Result.newBuilder().error(Error.DATA_EXISTED).message("用户已存在").write(response);
                         } else {
                             Result.newBuilder().error(Error.INTERNAL_ERROR).write(response);
@@ -76,11 +86,12 @@ public class UserController {
                 });
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @RequestMapping(path = "/me", method = RequestMethod.GET)
     public void currentUser(HttpServletRequest request, HttpServletResponse response) {
 
         final AsyncContext context = request.startAsync();
-        context.setTimeout(10000);
+        context.setTimeout(6000);
 
         final JsonWebTokenAuthentication authentication = (JsonWebTokenAuthentication) SecurityContextHolder.getContext()
                 .getAuthentication();

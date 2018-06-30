@@ -3,7 +3,7 @@ package com.zhenhui.demo.sparklers.service.results;
 @SuppressWarnings("unused")
 public enum Error {
     NONE(0, "成功"),
-    FORMAT_INVALID(1, "错误请求, 请检查格式"),
+    INVALID_INPUT(1, "错误请求, 请检查输入"),
     DATA_NOT_FOUND(2, "数据不存在"),
     DATA_EXISTED(3, "数据已存在"),
     DATA_INVALID(4, "数据已失效"),

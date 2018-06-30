@@ -6,9 +6,10 @@ import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninWithCaptcha;
+import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
-import com.zhenhui.demo.sparklers.service.CaptchaManager;
+import com.zhenhui.demo.sparklers.data.repository.CaptchaRepositoryImpl;
 import io.reactivex.observers.TestObserver;
 import org.junit.After;
 import org.junit.Before;
@@ -33,18 +34,20 @@ public class SigninWithCaptchaTests {
     @Autowired
     private TokenUtils tokenUtils;
     @Autowired
-    private CaptchaManager captchaManager;
+    private CaptchaRepository captchaRepository;
 
     @Before
     public void setup() {
         TestObserver<Boolean> testObserver = new TestObserver<>();
-        createUser.execute(new CreateUser.Params("13818886666", "12345678", Sets.newHashSet("USER")), testObserver);
+
+        String captcha = captchaRepository.createCaptcha("13818886666", true);
+        createUser.execute(new CreateUser.Params("13818886666", "12345678", Sets.newHashSet("USER"), captcha), testObserver);
         testObserver.assertResult(true).assertComplete();
     }
 
     @After
     public void tearDown() {
-        captchaManager.removeAll();
+        captchaRepository.removeAll();
     }
 
     @Test
@@ -54,7 +57,7 @@ public class SigninWithCaptchaTests {
                 , null
                 , userRepository
                 , tokenUtils
-                , captchaManager);
+                , captchaRepository);
 
         TestObserver<String> testObserver = new TestObserver<>();
         signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", "1234"), testObserver);
@@ -70,9 +73,9 @@ public class SigninWithCaptchaTests {
                 , null
                 , userRepository
                 , tokenUtils
-                , captchaManager);
+                , captchaRepository);
 
-        String excepted = captchaManager.createCaptcha("13818886666", true);
+        String excepted = captchaRepository.createCaptcha("13818886666", true);
         assertNotNull(excepted);
 
         TestObserver<String> testObserver = new TestObserver<>();

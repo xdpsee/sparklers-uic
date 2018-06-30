@@ -5,6 +5,7 @@ import com.zhenhui.demo.sparklers.security.JsonWebTokenAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,8 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
-            .antMatchers("/auth/**").permitAll()
-
+            .antMatchers(HttpMethod.GET, "/auth/token", "auth/token/with-captcha").permitAll()
             .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
