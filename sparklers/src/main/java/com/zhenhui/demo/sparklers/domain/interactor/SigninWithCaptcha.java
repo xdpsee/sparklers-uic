@@ -22,18 +22,18 @@ import org.springframework.stereotype.Component;
  * exceptions: UserNotFoundException,
  */
 @Component
-public class SigninByCaptcha extends UseCase<SigninByCaptcha.Params, String> {
+public class SigninWithCaptcha extends UseCase<SigninWithCaptcha.Params, String> {
 
     private final UserRepository userRepository;
     private final TokenUtils tokenUtils;
     private final CaptchaManager captchaManager;
 
     @Autowired
-    public SigninByCaptcha(ThreadExecutor threadExecutor,
-                           PostExecutionThread postExecutionThread,
-                           UserRepository userRepository,
-                           TokenUtils tokenUtils,
-                           CaptchaManager captchaManager) {
+    public SigninWithCaptcha(ThreadExecutor threadExecutor,
+                             PostExecutionThread postExecutionThread,
+                             UserRepository userRepository,
+                             TokenUtils tokenUtils,
+                             CaptchaManager captchaManager) {
         super(threadExecutor, postExecutionThread);
         this.userRepository = userRepository;
         this.tokenUtils = tokenUtils;

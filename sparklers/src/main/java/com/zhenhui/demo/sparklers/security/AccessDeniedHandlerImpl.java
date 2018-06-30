@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zhenhui.demo.sparklers.service.results.ErrorCode;
+import com.zhenhui.demo.sparklers.service.results.Error;
 import com.zhenhui.demo.sparklers.service.results.Result;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -16,7 +16,7 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException e)
         throws IOException, ServletException {
         Result.newBuilder()
-            .error(ErrorCode.PERMISSION_DENIED)
+            .error(Error.PERMISSION_DENIED)
             .message("无数据访问权限")
             .write(response);
 

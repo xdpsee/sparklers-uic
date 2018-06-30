@@ -11,25 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class QueryUserById extends UseCase<Long, Optional<User>> {
+public class QueryUserWithPhone extends UseCase<String, Optional<User>>{
 
     private final UserRepository userRepository;
-
     @Autowired
-    public QueryUserById(ThreadExecutor threadExecutor,
-                         PostExecutionThread postExecutionThread,
-                         UserRepository userRepository) {
+    public QueryUserWithPhone(ThreadExecutor threadExecutor,
+                              PostExecutionThread postExecutionThread,
+                              UserRepository userRepository) {
         super(threadExecutor, postExecutionThread);
         this.userRepository = userRepository;
     }
 
     @Override
-    Observable<Optional<User>> buildObservable(Long userId) {
-
+    Observable<Optional<User>> buildObservable(String phone) {
         return Observable.create((emitter) -> {
             try {
-                final User user = userRepository.getUser(userId);
-                emitter.onNext(Optional.ofNullable(user));
+                emitter.onNext(Optional.ofNullable(userRepository.getUser(phone)));
                 emitter.onComplete();
             } catch (Exception e) {
                 emitter.onError(e);
@@ -37,7 +34,4 @@ public class QueryUserById extends UseCase<Long, Optional<User>> {
         });
     }
 }
-
-
-
 

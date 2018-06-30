@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class User {
 
     private long id;
+    @JsonIgnore
+    private String phone;
 
     private String name;
     @JsonIgnore

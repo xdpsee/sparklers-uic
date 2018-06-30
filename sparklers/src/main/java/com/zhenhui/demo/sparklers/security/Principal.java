@@ -26,7 +26,7 @@ public class Principal implements Serializable {
     public static Principal fromUser(User user) {
         Principal principal = new Principal();
         principal.setUserId(user.getId());
-        principal.setPhone(user.getName());
+        principal.setPhone(user.getPhone());
         principal.setAuthorities(user.getAuthorities());
         principal.setType(SocialType.NONE);
 

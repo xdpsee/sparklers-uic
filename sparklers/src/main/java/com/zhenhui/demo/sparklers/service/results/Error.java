@@ -1,7 +1,7 @@
 package com.zhenhui.demo.sparklers.service.results;
 
 @SuppressWarnings("unused")
-public enum ErrorCode {
+public enum Error {
     NONE(0, "成功"),
     FORMAT_INVALID(1, "错误请求, 请检查格式"),
     DATA_NOT_FOUND(2, "数据不存在"),
@@ -14,7 +14,7 @@ public enum ErrorCode {
     public final int code;
     public final String comment;
 
-    ErrorCode(int code, String comment) {
+    Error(int code, String comment) {
         this.code = code;
         this.comment = comment;
     }

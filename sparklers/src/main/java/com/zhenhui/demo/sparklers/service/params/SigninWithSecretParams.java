@@ -7,14 +7,13 @@ import org.hibernate.validator.constraints.ScriptAssert;
 
 @Data
 @ScriptAssert(lang = "javascript", script = "_this.secret != null || _this.captcha != null")
-public class SigninParams {
+public class SigninWithSecretParams {
 
     @NotNull
     private String phone;
-
+    @NotNull
     private String secret;
 
-    private String captcha;
 
 }
 

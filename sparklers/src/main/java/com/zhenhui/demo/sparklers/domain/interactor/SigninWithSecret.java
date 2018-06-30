@@ -1,12 +1,10 @@
 package com.zhenhui.demo.sparklers.domain.interactor;
 
-import javax.validation.constraints.NotNull;
-
 import com.zhenhui.demo.sparklers.domain.exception.BadSecretException;
 import com.zhenhui.demo.sparklers.domain.exception.UserNotFoundException;
 import com.zhenhui.demo.sparklers.domain.executor.PostExecutionThread;
 import com.zhenhui.demo.sparklers.domain.executor.ThreadExecutor;
-import com.zhenhui.demo.sparklers.domain.interactor.SigninBySecret.Params;
+import com.zhenhui.demo.sparklers.domain.interactor.SigninWithSecret.Params;
 import com.zhenhui.demo.sparklers.domain.model.User;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.security.Principal;
@@ -16,22 +14,26 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * exceptions: UserNotFoundException, BadSecretException
  */
-public class SigninBySecret extends UseCase<Params, String> {
+@Component
+public class SigninWithSecret extends UseCase<Params, String> {
 
     private final UserRepository userRepository;
     private final TokenUtils tokenUtils;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public SigninBySecret(ThreadExecutor threadExecutor,
-                          PostExecutionThread postExecutionThread,
-                          UserRepository userRepository,
-                          TokenUtils tokenUtils,
-                          PasswordEncoder passwordEncoder) {
+    public SigninWithSecret(ThreadExecutor threadExecutor,
+                            PostExecutionThread postExecutionThread,
+                            UserRepository userRepository,
+                            TokenUtils tokenUtils,
+                            PasswordEncoder passwordEncoder) {
         super(threadExecutor, postExecutionThread);
         this.userRepository = userRepository;
         this.tokenUtils = tokenUtils;

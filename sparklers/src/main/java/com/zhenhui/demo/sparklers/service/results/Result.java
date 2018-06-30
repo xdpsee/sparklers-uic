@@ -22,7 +22,7 @@ public final class Result<T> {
         return new Builder();
     }
 
-    private Result(ErrorCode code, String message, T data) {
+    private Result(Error code, String message, T data) {
         this.code = code.code;
         this.message = code.comment;
         this.details = message;
@@ -30,7 +30,7 @@ public final class Result<T> {
         this.data = data;
     }
 
-    private int genStatus(ErrorCode error) {
+    private int genStatus(Error error) {
         int status = 503;
         switch (error) {
             case NONE:
@@ -61,13 +61,13 @@ public final class Result<T> {
     }
 
     public static final class Builder<T> {
-        private ErrorCode error;
+        private Error error;
         private String message = "";
         private T data;
 
         protected Builder() {}
 
-        public Builder error(ErrorCode error) {
+        public Builder error(Error error) {
             this.error = error;
             return this;
         }

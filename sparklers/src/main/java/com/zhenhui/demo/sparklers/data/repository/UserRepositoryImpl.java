@@ -24,8 +24,8 @@ public class UserRepositoryImpl implements UserRepository {
     public User getUser(long userId) {
 
         final UserRecord record = context.selectFrom(Tables.USER)
-            .where(Tables.USER.ID.eq(userId))
-            .fetchOneInto(UserRecord.class);
+                .where(Tables.USER.ID.eq(userId))
+                .fetchOneInto(UserRecord.class);
 
         return record != null ? fromRecord(record) : null;
     }
@@ -33,8 +33,8 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUser(String phone) {
         final UserRecord record = context.selectFrom(Tables.USER)
-            .where(Tables.USER.PHONE.eq(phone))
-            .fetchOneInto(UserRecord.class);
+                .where(Tables.USER.PHONE.eq(phone))
+                .fetchOneInto(UserRecord.class);
 
         return record != null ? fromRecord(record) : null;
     }
@@ -42,12 +42,12 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean createUser(String phone, String secret, Set<String> authorities) {
         int rows = context.insertInto(USER)
-            .set(USER.PHONE, phone)
-            .set(USER.SECRET, secret)
-            .set(USER.NAME, "")
-            .set(USER.AVATAR, "")
-            .set(USER.AUTHORITIES, String.join(",", authorities))
-            .execute();
+                .set(USER.PHONE, phone)
+                .set(USER.SECRET, secret)
+                .set(USER.NAME, "")
+                .set(USER.AVATAR, "")
+                .set(USER.AUTHORITIES, String.join(",", authorities))
+                .execute();
         return rows == 1;
     }
 
@@ -55,10 +55,11 @@ public class UserRepositoryImpl implements UserRepository {
 
         if (record != null) {
             return new User(record.getId()
-                , record.getName()
-                , record.getSecret()
-                , record.getAvatar()
-                , Arrays.stream(record.getAuthorities().split(",")).collect(Collectors.toSet()));
+                    , record.getPhone()
+                    , record.getName()
+                    , record.getSecret()
+                    , record.getAvatar()
+                    , Arrays.stream(record.getAuthorities().split(",")).collect(Collectors.toSet()));
         }
 
         return null;

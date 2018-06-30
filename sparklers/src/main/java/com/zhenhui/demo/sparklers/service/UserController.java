@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.zhenhui.demo.sparklers.domain.exception.UserAlreadyExistException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser.Params;
-import com.zhenhui.demo.sparklers.domain.interactor.QueryUserById;
+import com.zhenhui.demo.sparklers.domain.interactor.QueryUserWithId;
 import com.zhenhui.demo.sparklers.domain.model.User;
 import com.zhenhui.demo.sparklers.security.JsonWebTokenAuthentication;
-import com.zhenhui.demo.sparklers.service.results.ErrorCode;
+import com.zhenhui.demo.sparklers.service.results.Error;
 import com.zhenhui.demo.sparklers.service.params.CreateUserParams;
 import com.zhenhui.demo.sparklers.service.results.Result;
 import io.reactivex.observers.DefaultObserver;
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    private QueryUserById queryUserById;
+    private QueryUserWithId queryUserWithId;
 
     @Autowired
     private CreateUser createUser;
@@ -55,15 +55,15 @@ public class UserController {
                 new DefaultObserver<Boolean>() {
                     @Override
                     public void onNext(Boolean success) {
-                        Result.newBuilder().error(ErrorCode.NONE).data(true).write(response);
+                        Result.newBuilder().error(Error.NONE).data(true).write(response);
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
                         if (throwable instanceof UserAlreadyExistException) {
-                            Result.newBuilder().error(ErrorCode.DATA_EXISTED).message("用户已存在").write(response);
+                            Result.newBuilder().error(Error.DATA_EXISTED).message("用户已存在").write(response);
                         } else {
-                            Result.newBuilder().error(ErrorCode.INTERNAL_ERROR).write(response);
+                            Result.newBuilder().error(Error.INTERNAL_ERROR).write(response);
                         }
 
                         context.complete();
@@ -85,19 +85,19 @@ public class UserController {
         final JsonWebTokenAuthentication authentication = (JsonWebTokenAuthentication) SecurityContextHolder.getContext()
                 .getAuthentication();
 
-        queryUserById.execute(authentication.principal.getUserId(), new DefaultObserver<Optional<User>>() {
+        queryUserWithId.execute(authentication.principal.getUserId(), new DefaultObserver<Optional<User>>() {
             @Override
             public void onNext(Optional<User> user) {
                 if (!user.isPresent()) {
-                    Result.newBuilder().error(ErrorCode.DATA_NOT_FOUND).message("未知用户").write(response);
+                    Result.newBuilder().error(Error.DATA_NOT_FOUND).message("未知用户").write(response);
                 } else {
-                    Result.newBuilder().error(ErrorCode.NONE).message("ok").data(user.get()).write(response);
+                    Result.newBuilder().error(Error.NONE).message("ok").data(user.get()).write(response);
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
-                Result.newBuilder().error(ErrorCode.INTERNAL_ERROR).write(response);
+                Result.newBuilder().error(Error.INTERNAL_ERROR).write(response);
                 context.complete();
             }
 
@@ -115,19 +115,19 @@ public class UserController {
         final AsyncContext context = request.startAsync();
         context.setTimeout(10000);
 
-        queryUserById.execute(userId, new DefaultObserver<Optional<User>>() {
+        queryUserWithId.execute(userId, new DefaultObserver<Optional<User>>() {
             @Override
             public void onNext(Optional<User> user) {
                 if (!user.isPresent()) {
-                    Result.newBuilder().error(ErrorCode.DATA_NOT_FOUND).message("未知用户").write(response);
+                    Result.newBuilder().error(Error.DATA_NOT_FOUND).message("未知用户").write(response);
                 } else {
-                    Result.newBuilder().error(ErrorCode.NONE).message("ok").data(user.get()).write(response);
+                    Result.newBuilder().error(Error.NONE).message("ok").data(user.get()).write(response);
                 }
             }
 
             @Override
             public void onError(Throwable throwable) {
-                Result.newBuilder().error(ErrorCode.INTERNAL_ERROR).write(response);
+                Result.newBuilder().error(Error.INTERNAL_ERROR).write(response);
                 context.complete();
             }
 

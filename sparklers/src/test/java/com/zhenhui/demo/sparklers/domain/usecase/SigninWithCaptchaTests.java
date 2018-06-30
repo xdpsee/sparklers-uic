@@ -5,7 +5,7 @@ import com.zhenhui.demo.sparklers.Application;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
-import com.zhenhui.demo.sparklers.domain.interactor.SigninByCaptcha;
+import com.zhenhui.demo.sparklers.domain.interactor.SigninWithCaptcha;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
 import com.zhenhui.demo.sparklers.service.CaptchaManager;
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertNotNull;
 @Transactional(transactionManager = "transactionManager")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
-public class SigninByCaptchaTests {
+public class SigninWithCaptchaTests {
 
     @Autowired
     private UserRepository userRepository;
@@ -50,14 +50,14 @@ public class SigninByCaptchaTests {
     @Test
     public void testCaptchaExpires() {
 
-        SigninByCaptcha signinByCaptcha = new SigninByCaptcha(null
+        SigninWithCaptcha signinWithCaptcha = new SigninWithCaptcha(null
                 , null
                 , userRepository
                 , tokenUtils
                 , captchaManager);
 
         TestObserver<String> testObserver = new TestObserver<>();
-        signinByCaptcha.execute(new SigninByCaptcha.Params("13818886666", "1234"), testObserver);
+        signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", "1234"), testObserver);
 
         testObserver.assertError(CaptchaExpireException.class);
 
@@ -66,7 +66,7 @@ public class SigninByCaptchaTests {
     @Test
     public void testCaptchaMismatch() {
 
-        SigninByCaptcha signinByCaptcha = new SigninByCaptcha(null
+        SigninWithCaptcha signinWithCaptcha = new SigninWithCaptcha(null
                 , null
                 , userRepository
                 , tokenUtils
@@ -76,7 +76,7 @@ public class SigninByCaptchaTests {
         assertNotNull(excepted);
 
         TestObserver<String> testObserver = new TestObserver<>();
-        signinByCaptcha.execute(new SigninByCaptcha.Params("13818886666", "????"), testObserver);
+        signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", "????"), testObserver);
 
         testObserver.assertError(CaptchaMismatchException.class);
 

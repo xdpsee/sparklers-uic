@@ -6,7 +6,7 @@ import com.zhenhui.demo.sparklers.domain.exception.BadSecretException;
 import com.zhenhui.demo.sparklers.domain.exception.UserNotFoundException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser.Params;
-import com.zhenhui.demo.sparklers.domain.interactor.SigninBySecret;
+import com.zhenhui.demo.sparklers.domain.interactor.SigninWithSecret;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
 import io.reactivex.observers.TestObserver;
@@ -17,13 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(transactionManager = "transactionManager")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
-public class SigninBySecretTests {
+public class SigninWithSecretTests {
 
     @Autowired
     private UserRepository userRepository;
@@ -43,14 +42,14 @@ public class SigninBySecretTests {
 
     @Test
     public void testSigninNormal() {
-        SigninBySecret signinBySecret = new SigninBySecret(null
+        SigninWithSecret signinWithSecret = new SigninWithSecret(null
             , null
             , userRepository
             , tokenUtils
             , passwordEncoder);
 
         TestObserver<String> testObserver = new TestObserver<>();
-        signinBySecret.execute(new SigninBySecret.Params("18000001234", "12345678"), testObserver);
+        signinWithSecret.execute(new SigninWithSecret.Params("18000001234", "12345678"), testObserver);
 
         testObserver.assertOf(o -> {
             if (o.valueCount() != 1) {
@@ -64,28 +63,28 @@ public class SigninBySecretTests {
 
     @Test
     public void testSigninBadSecret() {
-        SigninBySecret signinBySecret = new SigninBySecret(null
+        SigninWithSecret signinWithSecret = new SigninWithSecret(null
             , null
             , userRepository
             , tokenUtils
             , passwordEncoder);
 
         TestObserver<String> testObserver = new TestObserver<>();
-        signinBySecret.execute(new SigninBySecret.Params("18000001234", "12345670"), testObserver);
+        signinWithSecret.execute(new SigninWithSecret.Params("18000001234", "12345670"), testObserver);
 
         testObserver.assertError(BadSecretException.class);
     }
 
     @Test
     public void testSigninUserAbsent() {
-        SigninBySecret signinBySecret = new SigninBySecret(null
+        SigninWithSecret signinWithSecret = new SigninWithSecret(null
             , null
             , userRepository
             , tokenUtils
             , passwordEncoder);
 
         TestObserver<String> testObserver = new TestObserver<>();
-        signinBySecret.execute(new SigninBySecret.Params("1800000000", "12345678"), testObserver);
+        signinWithSecret.execute(new SigninWithSecret.Params("1800000000", "12345678"), testObserver);
 
         testObserver.assertError(UserNotFoundException.class);
     }

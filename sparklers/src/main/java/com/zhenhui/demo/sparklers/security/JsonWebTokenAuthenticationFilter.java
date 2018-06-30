@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.zhenhui.demo.sparklers.security.exception.ExpiresTokenException;
 import com.zhenhui.demo.sparklers.security.exception.InvalidTokenException;
-import com.zhenhui.demo.sparklers.service.results.ErrorCode;
+import com.zhenhui.demo.sparklers.service.results.Error;
 import com.zhenhui.demo.sparklers.service.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,11 +41,11 @@ public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
                 }
             } catch (Exception e) {
                 if (e instanceof ExpiresTokenException) {
-                    Result.newBuilder().error(ErrorCode.LOGIN_REQUIRED).message("令牌已过期,请重新登录").write(response);
+                    Result.newBuilder().error(Error.LOGIN_REQUIRED).message("令牌已过期,请重新登录").write(response);
                 } else if (e instanceof InvalidTokenException) {
-                    Result.newBuilder().error(ErrorCode.LOGIN_REQUIRED).message("无效令牌").write(response);
+                    Result.newBuilder().error(Error.LOGIN_REQUIRED).message("无效令牌").write(response);
                 } else {
-                    Result.newBuilder().error(ErrorCode.INTERNAL_ERROR).write(response);
+                    Result.newBuilder().error(Error.INTERNAL_ERROR).write(response);
                 }
 
                 return;
