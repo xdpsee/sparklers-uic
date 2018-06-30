@@ -7,9 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.zhenhui.demo.sparklers.domain.exception.UserNotFoundException;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninByCaptcha;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninByCaptcha.Params;
-import com.zhenhui.demo.sparklers.service.enums.ErrorCode;
+import com.zhenhui.demo.sparklers.service.results.ErrorCode;
 import com.zhenhui.demo.sparklers.service.params.SigninParams;
-import com.zhenhui.demo.sparklers.utils.Message;
+import com.zhenhui.demo.sparklers.service.results.Result;
 import io.reactivex.observers.DefaultObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +36,7 @@ public class AuthController {
         signinByCaptcha.execute(new Params(body.getPhone(), body.getCaptcha()), new DefaultObserver<String>() {
             @Override
             public void onNext(String token) {
-                Message.newBuilder()
+                Result.newBuilder()
                     .error(ErrorCode.NONE)
                     .data(token)
                     .write(response);
@@ -45,13 +45,13 @@ public class AuthController {
             @Override
             public void onError(Throwable e) {
                 if (e instanceof UserNotFoundException) {
-                    Message.newBuilder()
+                    Result.newBuilder()
                         .error(ErrorCode.DATA_NOT_FOUND)
                         .message("用户不存在")
                         .write(response);
                     context.complete();
                 } else {
-                    Message.newBuilder()
+                    Result.newBuilder()
                         .error(ErrorCode.INTERNAL_ERROR)
                         .write(response);
                     context.complete();

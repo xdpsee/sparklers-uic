@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.service.enums;
+package com.zhenhui.demo.sparklers.service.results;
 
 @SuppressWarnings("unused")
 public enum ErrorCode {

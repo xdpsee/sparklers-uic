@@ -1,16 +1,16 @@
-package com.zhenhui.demo.sparklers.utils;
+package com.zhenhui.demo.sparklers.service.results;
 
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import com.zhenhui.demo.sparklers.service.enums.ErrorCode;
+import com.zhenhui.demo.sparklers.utils.JSONUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class Message<T> {
+public final class Result<T> {
 
-    private static final Logger logger = LoggerFactory.getLogger(Message.class);
+    private static final Logger logger = LoggerFactory.getLogger(Result.class);
 
     private final int status;
     private final int code;
@@ -22,7 +22,7 @@ public final class Message<T> {
         return new Builder();
     }
 
-    private Message(ErrorCode code, String message, T data) {
+    private Result(ErrorCode code, String message, T data) {
         this.code = code.code;
         this.message = code.comment;
         this.details = message;
@@ -83,15 +83,15 @@ public final class Message<T> {
         }
 
         public void write(HttpServletResponse response) {
-            Message<T> message = new Message<>(this.error, this.message, this.data);
-            String json = JSONUtils.toJsonString(message);
-            response.setStatus(message.status);
+            Result<T> result = new Result<>(this.error, this.message, this.data);
+            String json = JSONUtils.toJsonString(result);
+            response.setStatus(result.status);
             response.setHeader("Content-Type", "application/json;charset=utf-8");
 
             try {
                 response.getWriter().write(json);
             } catch (IOException e) {
-                logger.error("Message.write error", e);
+                logger.error("Result.write error", e);
 
             }
         }

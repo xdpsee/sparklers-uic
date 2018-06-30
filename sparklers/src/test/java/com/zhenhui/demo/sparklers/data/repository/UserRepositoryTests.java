@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.repository;
+package com.zhenhui.demo.sparklers.data.repository;
 
 import java.util.List;
 

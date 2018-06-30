@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.usecase;
+package com.zhenhui.demo.sparklers.domain.usecase;
 
 import com.google.common.collect.Sets;
 import com.zhenhui.demo.sparklers.Application;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(transactionManager = "transactionManager")
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class)
-@WebAppConfiguration
 public class CreateUserTests {
 
     @Autowired
