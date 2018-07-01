@@ -9,7 +9,6 @@ import com.zhenhui.demo.sparklers.domain.interactor.SigninWithCaptcha;
 import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
-import com.zhenhui.demo.sparklers.data.repository.CaptchaRepositoryImpl;
 import io.reactivex.observers.TestObserver;
 import org.junit.After;
 import org.junit.Before;
@@ -30,8 +29,6 @@ public class SigninWithCaptchaTests {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private CreateUser createUser;
-    @Autowired
     private TokenUtils tokenUtils;
     @Autowired
     private CaptchaRepository captchaRepository;
@@ -41,7 +38,9 @@ public class SigninWithCaptchaTests {
         TestObserver<Boolean> testObserver = new TestObserver<>();
 
         String captcha = captchaRepository.createCaptcha("13818886666", true);
+        CreateUser createUser = new CreateUser(null, null, userRepository, captchaRepository);
         createUser.execute(new CreateUser.Params("13818886666", "12345678", Sets.newHashSet("USER"), captcha), testObserver);
+
         testObserver.assertResult(true).assertComplete();
     }
 
@@ -75,11 +74,11 @@ public class SigninWithCaptchaTests {
                 , tokenUtils
                 , captchaRepository);
 
-        String excepted = captchaRepository.createCaptcha("13818886666", true);
+        String excepted = captchaRepository.createCaptcha("13818886661", true);
         assertNotNull(excepted);
 
         TestObserver<String> testObserver = new TestObserver<>();
-        signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", "????"), testObserver);
+        signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886662", "????"), testObserver);
 
         testObserver.assertError(CaptchaMismatchException.class);
 

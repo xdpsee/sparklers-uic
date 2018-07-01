@@ -1,7 +1,5 @@
 package com.zhenhui.demo.sparklers.domain.interactor;
 
-import java.util.Set;
-
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
 import com.zhenhui.demo.sparklers.domain.exception.UserAlreadyExistException;
@@ -9,13 +7,14 @@ import com.zhenhui.demo.sparklers.domain.executor.PostExecutionThread;
 import com.zhenhui.demo.sparklers.domain.executor.ThreadExecutor;
 import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
-import com.zhenhui.demo.sparklers.data.repository.CaptchaRepositoryImpl;
 import com.zhenhui.demo.sparklers.utils.ExceptionUtils;
 import io.reactivex.Observable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 /**
  * exceptions: UserAlreadyExistException

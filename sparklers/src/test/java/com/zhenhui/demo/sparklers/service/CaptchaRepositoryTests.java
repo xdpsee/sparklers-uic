@@ -1,7 +1,7 @@
 package com.zhenhui.demo.sparklers.service;
 
 import com.zhenhui.demo.sparklers.Application;
-import com.zhenhui.demo.sparklers.data.repository.CaptchaRepositoryImpl;
+import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @Transactional(transactionManager = "transactionManager")
 @RunWith(SpringRunner.class)
@@ -19,7 +17,7 @@ import static org.junit.Assert.assertNull;
 public class CaptchaRepositoryTests {
 
     @Autowired
-    private CaptchaRepositoryImpl captchaRepository;
+    private CaptchaRepository captchaRepository;
 
     @Test
     public void testNormal() {

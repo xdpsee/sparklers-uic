@@ -1,7 +1,5 @@
 package com.zhenhui.demo.sparklers.domain.interactor;
 
-import javax.validation.constraints.NotNull;
-
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
 import com.zhenhui.demo.sparklers.domain.exception.UserNotFoundException;
@@ -12,12 +10,13 @@ import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.security.Principal;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
-import com.zhenhui.demo.sparklers.data.repository.CaptchaRepositoryImpl;
 import io.reactivex.Observable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * exceptions: UserNotFoundException,
