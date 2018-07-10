@@ -10,8 +10,8 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
+        <module>common</module>
         <module>sparklers</module>
-        <module>bootstrap</module>
     </modules>
 
     <dependencyManagement>

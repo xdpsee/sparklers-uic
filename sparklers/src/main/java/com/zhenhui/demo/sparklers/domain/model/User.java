@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zhenhui.demo.sparklers.common.SocialType;
+import com.zhenhui.demo.sparklers.security.Principal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +26,18 @@ public class User {
     private String avatar;
 
     private Set<String> authorities = new HashSet<>();
+
+    public Principal toPrincipal() {
+
+        Principal principal = new Principal();
+
+        principal.setUserId(id);
+        principal.setPhone(phone);
+        principal.setAuthorities(authorities);
+        principal.setType(SocialType.NONE);
+
+        return principal;
+    }
 
 }
 

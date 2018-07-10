@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.domain.model;
+package com.zhenhui.demo.sparklers.common;
 
 import java.util.Arrays;
 

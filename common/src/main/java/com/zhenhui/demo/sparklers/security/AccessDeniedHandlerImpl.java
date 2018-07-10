@@ -6,8 +6,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zhenhui.demo.sparklers.service.results.Error;
-import com.zhenhui.demo.sparklers.service.results.Result;
+import com.zhenhui.demo.sparklers.common.Result;
+import com.zhenhui.demo.sparklers.common.Error;
+
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 

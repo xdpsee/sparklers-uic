@@ -1,18 +1,18 @@
 package com.zhenhui.demo.sparklers.service;
 
-import com.zhenhui.demo.sparklers.data.repository.BlacklistRepositoryImpl;
+import com.zhenhui.demo.sparklers.common.Error;
+import com.zhenhui.demo.sparklers.common.Result;
 import com.zhenhui.demo.sparklers.domain.exception.BadSecretException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
 import com.zhenhui.demo.sparklers.domain.exception.UserNotFoundException;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninWithCaptcha;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninWithSecret;
+import com.zhenhui.demo.sparklers.security.BlacklistService;
 import com.zhenhui.demo.sparklers.security.JsonWebTokenAuthentication;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
 import com.zhenhui.demo.sparklers.service.params.SigninWithCaptchaParams;
 import com.zhenhui.demo.sparklers.service.params.SigninWithSecretParams;
-import com.zhenhui.demo.sparklers.service.results.Error;
-import com.zhenhui.demo.sparklers.service.results.Result;
 import io.reactivex.observers.DefaultObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -38,7 +38,7 @@ public class AuthController {
     @Autowired
     private TokenUtils tokenUtils;
     @Autowired
-    private BlacklistRepositoryImpl blacklistRepository;
+    private BlacklistService blacklistService;
 
     @RequestMapping(method = RequestMethod.POST)
     public void createToken(@RequestBody SigninWithSecretParams body,
@@ -135,7 +135,7 @@ public class AuthController {
 
         try {
             final String token = (String) request.getAttribute("token");
-            blacklistRepository.block(token);
+            blacklistService.block(token);
 
             Result.newBuilder().error(Error.NONE).data(true).write(response);
         } catch (Exception e) {

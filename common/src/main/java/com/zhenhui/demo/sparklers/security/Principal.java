@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.zhenhui.demo.sparklers.domain.model.SocialType;
-import com.zhenhui.demo.sparklers.domain.model.User;
+import com.zhenhui.demo.sparklers.common.SocialType;
 import lombok.Data;
 
 @Data
@@ -23,15 +22,6 @@ public class Principal implements Serializable {
 
     private Set<String> authorities = new HashSet<>();
 
-    public static Principal fromUser(User user) {
-        Principal principal = new Principal();
-        principal.setUserId(user.getId());
-        principal.setPhone(user.getPhone());
-        principal.setAuthorities(user.getAuthorities());
-        principal.setType(SocialType.NONE);
-
-        return principal;
-    }
 }
 
 

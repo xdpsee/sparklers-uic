@@ -1,5 +1,6 @@
 package com.zhenhui.demo.sparklers.security;
 
+import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +15,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -35,7 +35,7 @@ public class TokenUtils implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        byte[] encodedKey = Base64.decodeBase64(secret);
+        byte[] encodedKey = Base64.getDecoder().decode(secret);
         secretKey = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
     }
 

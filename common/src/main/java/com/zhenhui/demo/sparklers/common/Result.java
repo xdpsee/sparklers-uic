@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.service.results;
+package com.zhenhui.demo.sparklers.common;
 
 import com.zhenhui.demo.sparklers.utils.JSONUtils;
 import org.slf4j.Logger;
@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@SuppressWarnings("unused")
 public class Result<T> {
 
     private static final Logger logger = LoggerFactory.getLogger(Result.class);

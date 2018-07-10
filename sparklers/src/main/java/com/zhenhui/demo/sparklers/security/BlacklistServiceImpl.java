@@ -1,15 +1,15 @@
-package com.zhenhui.demo.sparklers.data.repository;
+package com.zhenhui.demo.sparklers.security;
 
-import com.zhenhui.demo.sparklers.domain.repository.BlacklistRepository;
+import com.alibaba.dubbo.config.annotation.Service;
+import com.zhenhui.demo.sparklers.security.BlacklistService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.stereotype.Component;
 
-@SuppressWarnings("SpringJavaAutowiringInspection")
-@Component
-public class BlacklistRepositoryImpl implements BlacklistRepository, InitializingBean {
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+@Service(interfaceClass = BlacklistService.class)
+public class BlacklistServiceImpl implements BlacklistService, InitializingBean {
 
     @Autowired
     private CacheManager cacheManager;

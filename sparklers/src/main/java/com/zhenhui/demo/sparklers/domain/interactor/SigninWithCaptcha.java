@@ -63,7 +63,7 @@ public class SigninWithCaptcha extends UseCase<SigninWithCaptcha.Params, String>
 
             } else {
 
-                emitter.onNext(tokenUtils.createToken(Principal.fromUser(user)));
+                emitter.onNext(tokenUtils.createToken(user.toPrincipal()));
                 emitter.onComplete();
             }
         });

@@ -52,7 +52,7 @@ public class SigninWithSecret extends UseCase<Params, String> {
                     , passwordEncoder.encode(params.secret))) {
                     emitter.onError(new BadSecretException(""));
                 } else {
-                    emitter.onNext(tokenUtils.createToken(Principal.fromUser(user)));
+                    emitter.onNext(tokenUtils.createToken(user.toPrincipal()));
                     emitter.onComplete();
                 }
             }

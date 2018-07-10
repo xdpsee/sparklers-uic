@@ -1,22 +1,21 @@
 package com.zhenhui.demo.sparklers.security;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.zhenhui.demo.sparklers.data.repository.BlacklistRepositoryImpl;
+import com.alibaba.dubbo.config.annotation.Reference;
+import com.zhenhui.demo.sparklers.common.Error;
+import com.zhenhui.demo.sparklers.common.Result;
 import com.zhenhui.demo.sparklers.security.exception.ExpiresTokenException;
 import com.zhenhui.demo.sparklers.security.exception.InvalidTokenException;
-import com.zhenhui.demo.sparklers.service.results.Error;
-import com.zhenhui.demo.sparklers.service.results.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Component
 public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
@@ -27,8 +26,8 @@ public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenUtils tokenUtils;
 
-    @Autowired
-    private BlacklistRepositoryImpl blacklistRepository;
+    @Reference
+    private BlacklistService blacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request
@@ -36,7 +35,7 @@ public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
         , FilterChain chain) throws ServletException, IOException {
 
         final String token = parseToken(request);
-        if (token != null && !blacklistRepository.isBlocked(token)) {
+        if (token != null && !blacklistService.isBlocked(token)) {
             try {
                 Principal principal = tokenUtils.parseToken(token);
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {

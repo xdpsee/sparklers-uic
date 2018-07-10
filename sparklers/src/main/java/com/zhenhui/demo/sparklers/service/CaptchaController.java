@@ -1,8 +1,8 @@
 package com.zhenhui.demo.sparklers.service;
 
 import com.zhenhui.demo.sparklers.domain.interactor.CreateCaptcha;
-import com.zhenhui.demo.sparklers.service.results.Error;
-import com.zhenhui.demo.sparklers.service.results.Result;
+import com.zhenhui.demo.sparklers.common.Error;
+import com.zhenhui.demo.sparklers.common.Result;
 import io.reactivex.observers.DefaultObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
