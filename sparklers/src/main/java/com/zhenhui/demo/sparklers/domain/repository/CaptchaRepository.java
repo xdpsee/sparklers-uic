@@ -8,6 +8,4 @@ public interface CaptchaRepository {
 
     void invalidCaptcha(String phone);
 
-    void removeAll();
-
 }

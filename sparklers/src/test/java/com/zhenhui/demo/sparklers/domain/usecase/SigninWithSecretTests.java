@@ -1,7 +1,7 @@
 package com.zhenhui.demo.sparklers.domain.usecase;
 
 import com.google.common.collect.Sets;
-import com.zhenhui.demo.sparklers.Application;
+import com.zhenhui.demo.sparklers.TestBase;
 import com.zhenhui.demo.sparklers.domain.exception.BadSecretException;
 import com.zhenhui.demo.sparklers.domain.exception.UserNotFoundException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
@@ -13,17 +13,10 @@ import com.zhenhui.demo.sparklers.security.TokenUtils;
 import io.reactivex.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(transactionManager = "transactionManager")
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
-public class SigninWithSecretTests {
+public class SigninWithSecretTests extends TestBase {
 
     @Autowired
     private UserRepository userRepository;
@@ -37,20 +30,23 @@ public class SigninWithSecretTests {
     private PasswordEncoder passwordEncoder;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
+        super.setup();
+
         TestObserver<Boolean> testObserver = new TestObserver<>();
         String captcha = captchaRepository.createCaptcha("18000001234", true);
         createUser.execute(new Params("18000001234", "12345678", Sets.newHashSet("USER"), captcha), testObserver);
         testObserver.assertResult(true).assertComplete();
     }
 
+
     @Test
     public void testSigninNormal() {
         SigninWithSecret signinWithSecret = new SigninWithSecret(null
-            , null
-            , userRepository
-            , tokenUtils
-            , passwordEncoder);
+                , null
+                , userRepository
+                , tokenUtils
+                , passwordEncoder);
 
         TestObserver<String> testObserver = new TestObserver<>();
         signinWithSecret.execute(new SigninWithSecret.Params("18000001234", "12345678"), testObserver);
@@ -68,10 +64,10 @@ public class SigninWithSecretTests {
     @Test
     public void testSigninBadSecret() {
         SigninWithSecret signinWithSecret = new SigninWithSecret(null
-            , null
-            , userRepository
-            , tokenUtils
-            , passwordEncoder);
+                , null
+                , userRepository
+                , tokenUtils
+                , passwordEncoder);
 
         TestObserver<String> testObserver = new TestObserver<>();
         signinWithSecret.execute(new SigninWithSecret.Params("18000001234", "12345670"), testObserver);
@@ -82,10 +78,10 @@ public class SigninWithSecretTests {
     @Test
     public void testSigninUserAbsent() {
         SigninWithSecret signinWithSecret = new SigninWithSecret(null
-            , null
-            , userRepository
-            , tokenUtils
-            , passwordEncoder);
+                , null
+                , userRepository
+                , tokenUtils
+                , passwordEncoder);
 
         TestObserver<String> testObserver = new TestObserver<>();
         signinWithSecret.execute(new SigninWithSecret.Params("1800000000", "12345678"), testObserver);

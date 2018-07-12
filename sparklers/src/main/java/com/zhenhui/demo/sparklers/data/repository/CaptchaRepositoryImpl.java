@@ -1,5 +1,6 @@
 package com.zhenhui.demo.sparklers.data.repository;
 
+import com.zhenhui.demo.sparklers.data.cache.CaptchaCache;
 import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.InitializingBean;
@@ -11,20 +12,13 @@ import org.springframework.stereotype.Component;
 
 @SuppressWarnings("SpringJavaAutowiringInspection")
 @Component
-public class CaptchaRepositoryImpl implements CaptchaRepository, InitializingBean {
+public class CaptchaRepositoryImpl implements CaptchaRepository {
 
     @Autowired
-    private CacheManager cacheManager;
-
-    private Cache cache;
+    private CaptchaCache captchaCache;
 
     private final static RandomStringGenerator generator = new RandomStringGenerator.Builder()
             .withinRange('0', '9').build();
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        cache = cacheManager.getCache("captchas");
-    }
 
     @Override
     public String createCaptcha(String phone, boolean create) {
@@ -33,7 +27,7 @@ public class CaptchaRepositoryImpl implements CaptchaRepository, InitializingBea
 
         if (create) {
             captcha = generator.generate(4);
-            cache.put(phone, captcha);
+            captchaCache.put(phone, captcha);
         } else {
             return lookupCaptcha(phone);
         }
@@ -43,22 +37,12 @@ public class CaptchaRepositoryImpl implements CaptchaRepository, InitializingBea
 
     @Override
     public String lookupCaptcha(String phone) {
-        Cache.ValueWrapper element = cache.get(phone);
-        if (element != null) {
-            return (String) element.get();
-        }
-
-        return null;
+        return captchaCache.get(phone);
     }
 
     @Override
     public void invalidCaptcha(String phone) {
-        cache.evict(phone);
-    }
-
-    @Override
-    public void removeAll() {
-        cache.clear();
+        captchaCache.evict(phone);
     }
 
 }

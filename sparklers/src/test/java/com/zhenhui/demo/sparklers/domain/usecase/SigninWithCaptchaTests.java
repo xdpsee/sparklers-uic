@@ -1,7 +1,7 @@
 package com.zhenhui.demo.sparklers.domain.usecase;
 
 import com.google.common.collect.Sets;
-import com.zhenhui.demo.sparklers.Application;
+import com.zhenhui.demo.sparklers.TestBase;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
@@ -10,21 +10,11 @@ import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
 import io.reactivex.observers.TestObserver;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.assertNotNull;
-
-@Transactional(transactionManager = "transactionManager")
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = Application.class)
-public class SigninWithCaptchaTests {
+public class SigninWithCaptchaTests extends TestBase {
 
     @Autowired
     private UserRepository userRepository;
@@ -33,8 +23,11 @@ public class SigninWithCaptchaTests {
     @Autowired
     private CaptchaRepository captchaRepository;
 
+
     @Before
-    public void setup() {
+    public void setup() throws Exception  {
+        super.setup();
+
         TestObserver<Boolean> testObserver = new TestObserver<>();
 
         String captcha = captchaRepository.createCaptcha("13818886666", true);
@@ -42,27 +35,6 @@ public class SigninWithCaptchaTests {
         createUser.execute(new CreateUser.Params("13818886666", "12345678", Sets.newHashSet("USER"), captcha), testObserver);
 
         testObserver.assertResult(true).assertComplete();
-    }
-
-    @After
-    public void tearDown() {
-        captchaRepository.removeAll();
-    }
-
-    @Test
-    public void testCaptchaExpires() {
-
-        SigninWithCaptcha signinWithCaptcha = new SigninWithCaptcha(null
-                , null
-                , userRepository
-                , tokenUtils
-                , captchaRepository);
-
-        TestObserver<String> testObserver = new TestObserver<>();
-        signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", "1234"), testObserver);
-
-        testObserver.assertError(CaptchaExpireException.class);
-
     }
 
     @Test
@@ -74,13 +46,29 @@ public class SigninWithCaptchaTests {
                 , tokenUtils
                 , captchaRepository);
 
-        String excepted = captchaRepository.createCaptcha("13818886661", true);
-        assertNotNull(excepted);
-
         TestObserver<String> testObserver = new TestObserver<>();
-        signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886662", "????"), testObserver);
+        signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", "----"), testObserver);
 
         testObserver.assertError(CaptchaMismatchException.class);
+
+    }
+
+    @Test
+    public void testCaptchaExpired() {
+
+        SigninWithCaptcha signinWithCaptcha = new SigninWithCaptcha(null
+                , null
+                , userRepository
+                , tokenUtils
+                , captchaRepository);
+
+        String captcha = captchaRepository.createCaptcha("13818886666", true);
+        captchaRepository.invalidCaptcha("13818886666");
+
+        TestObserver<String> testObserver = new TestObserver<>();
+        signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", captcha), testObserver);
+
+        testObserver.assertError(CaptchaExpireException.class);
 
     }
 }
