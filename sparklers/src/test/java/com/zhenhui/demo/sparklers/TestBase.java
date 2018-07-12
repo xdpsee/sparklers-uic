@@ -2,10 +2,7 @@ package com.zhenhui.demo.sparklers;
 
 import ai.grakn.redismock.RedisServer;
 import org.apache.curator.test.TestingServer;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -46,4 +43,8 @@ public class TestBase {
         redisServer = null;
     }
 
+    @Test
+    public void test() {
+
+    }
 }
