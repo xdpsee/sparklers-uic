@@ -23,7 +23,7 @@ import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("SpringJavaAutowiringInspection,unchecked")
 @RestController
 @RequestMapping("/auth/token")
 public class AuthController {
@@ -121,12 +121,14 @@ public class AuthController {
 
     @PreAuthorize("hasAuthority('USER')")
     @RequestMapping(method = RequestMethod.PATCH)
-    public String refreshToken() {
+    public void refreshToken(HttpServletResponse response) {
 
         final JsonWebTokenAuthentication authentication = (JsonWebTokenAuthentication) SecurityContextHolder.getContext()
                 .getAuthentication();
 
-        return tokenUtils.createToken(authentication.principal);
+        Result.newBuilder().error(Error.NONE)
+                .data(tokenUtils.createToken(authentication.principal))
+                .write(response);
     }
 
     @PreAuthorize("hasAuthority('USER')")
@@ -140,7 +142,6 @@ public class AuthController {
             Result.newBuilder().error(Error.NONE).data(true).write(response);
         } catch (Exception e) {
             Result.newBuilder().error(Error.INTERNAL_ERROR).message("服务不可用").write(response);
-
         }
     }
 }

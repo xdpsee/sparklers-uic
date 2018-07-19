@@ -1,7 +1,9 @@
 package com.zhenhui.demo.sparklers;
 
 import org.apache.curator.test.TestingServer;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
@@ -34,16 +36,6 @@ public class TestBase {
         zooKeeperServer = null;
         redisServer.stop();
         redisServer = null;
-    }
-
-    @Before
-    public void setup() throws Exception {
-
-    }
-
-    @After
-    public void tearDown() {
-
     }
 
     @Test
