@@ -2,9 +2,11 @@ package com.zhenhui.demo.sparklers.domain.interactor;
 
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
+import com.zhenhui.demo.sparklers.domain.exception.CaptchaNotFoundException;
 import com.zhenhui.demo.sparklers.domain.exception.UserNotFoundException;
 import com.zhenhui.demo.sparklers.domain.executor.PostExecutionThread;
 import com.zhenhui.demo.sparklers.domain.executor.ThreadExecutor;
+import com.zhenhui.demo.sparklers.domain.model.Captcha;
 import com.zhenhui.demo.sparklers.domain.model.User;
 import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
@@ -44,18 +46,23 @@ public class SigninWithCaptcha extends UseCase<SigninWithCaptcha.Params, String>
     Observable<String> buildObservable(Params params) {
 
         return Observable.create((emitter) -> {
-            final String captcha = captchaRepository.lookupCaptcha(params.phone);
+            final Captcha captcha = captchaRepository.lookupCaptcha(params.phone);
             if (null == captcha) {
+                emitter.onError(new CaptchaNotFoundException(params.getCaptcha()));
+                return;
+            }
+
+            if (captcha.getExpireAt() < System.currentTimeMillis()) {
                 emitter.onError(new CaptchaExpireException());
                 return;
             }
 
-            if (!captcha.equals(params.captcha)) {
+            if (!captcha.getCode().equals(params.captcha)) {
                 emitter.onError(new CaptchaMismatchException());
                 return;
             }
 
-            captchaRepository.invalidCaptcha(params.phone);
+            captchaRepository.invalidCaptcha(params.phone, params.getCaptcha());
 
             final User user = userRepository.getUser(params.phone);
             if (null == user) {

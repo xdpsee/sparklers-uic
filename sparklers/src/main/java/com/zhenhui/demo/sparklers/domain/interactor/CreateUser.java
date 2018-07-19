@@ -2,9 +2,11 @@ package com.zhenhui.demo.sparklers.domain.interactor;
 
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
+import com.zhenhui.demo.sparklers.domain.exception.CaptchaNotFoundException;
 import com.zhenhui.demo.sparklers.domain.exception.UserAlreadyExistException;
 import com.zhenhui.demo.sparklers.domain.executor.PostExecutionThread;
 import com.zhenhui.demo.sparklers.domain.executor.ThreadExecutor;
+import com.zhenhui.demo.sparklers.domain.model.Captcha;
 import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.utils.ExceptionUtils;
@@ -41,18 +43,23 @@ public class CreateUser extends UseCase<CreateUser.Params, Boolean> {
 
         return Observable.create((emitter) -> {
             try {
-                final String captcha = captchaRepository.lookupCaptcha(params.phone);
+                final Captcha captcha = captchaRepository.lookupCaptcha(params.phone);
                 if (null == captcha) {
+                    emitter.onError(new CaptchaNotFoundException(params.captcha));
+                    return;
+                }
+
+                if (captcha.getExpireAt() <= System.currentTimeMillis()) {
                     emitter.onError(new CaptchaExpireException());
                     return;
                 }
 
-                if (!captcha.equals(params.captcha)) {
+                if (!captcha.getCode().equals(params.captcha)) {
                     emitter.onError(new CaptchaMismatchException());
                     return;
                 }
 
-                captchaRepository.invalidCaptcha(captcha);
+                captchaRepository.invalidCaptcha(params.phone, captcha.getCode());
 
                 boolean success = userRepository.createUser(params.phone, params.secret, params.authorities);
                 emitter.onNext(success);

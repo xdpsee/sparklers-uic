@@ -4,8 +4,10 @@ import com.google.common.collect.Sets;
 import com.zhenhui.demo.sparklers.TestBase;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
+import com.zhenhui.demo.sparklers.domain.exception.CaptchaNotFoundException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninWithCaptcha;
+import com.zhenhui.demo.sparklers.domain.model.Captcha;
 import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
@@ -30,15 +32,15 @@ public class SigninWithCaptchaTests extends TestBase {
 
         TestObserver<Boolean> testObserver = new TestObserver<>();
 
-        String captcha = captchaRepository.createCaptcha("13818886666", true);
+        Captcha captcha = captchaRepository.createCaptcha("13818886666");
         CreateUser createUser = new CreateUser(null, null, userRepository, captchaRepository);
-        createUser.execute(new CreateUser.Params("13818886666", "12345678", Sets.newHashSet("USER"), captcha), testObserver);
+        createUser.execute(new CreateUser.Params("13818886666", "12345678", Sets.newHashSet("USER"), captcha.getCode()), testObserver);
 
         testObserver.assertResult(true).assertComplete();
     }
 
     @Test
-    public void testCaptchaMismatch() {
+    public void testCaptchaNotFound() {
 
         SigninWithCaptcha signinWithCaptcha = new SigninWithCaptcha(null
                 , null
@@ -49,12 +51,12 @@ public class SigninWithCaptchaTests extends TestBase {
         TestObserver<String> testObserver = new TestObserver<>();
         signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", "----"), testObserver);
 
-        testObserver.assertError(CaptchaMismatchException.class);
+        testObserver.assertError(CaptchaNotFoundException.class);
 
     }
 
     @Test
-    public void testCaptchaExpired() {
+    public void testCaptchaMismatch() throws Exception {
 
         SigninWithCaptcha signinWithCaptcha = new SigninWithCaptcha(null
                 , null
@@ -62,13 +64,12 @@ public class SigninWithCaptchaTests extends TestBase {
                 , tokenUtils
                 , captchaRepository);
 
-        String captcha = captchaRepository.createCaptcha("13818886666", true);
-        captchaRepository.invalidCaptcha("13818886666");
+        captchaRepository.createCaptcha("13818886666");
 
         TestObserver<String> testObserver = new TestObserver<>();
-        signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", captcha), testObserver);
+        signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", "????"), testObserver);
 
-        testObserver.assertError(CaptchaExpireException.class);
+        testObserver.assertError(CaptchaMismatchException.class);
 
     }
 }

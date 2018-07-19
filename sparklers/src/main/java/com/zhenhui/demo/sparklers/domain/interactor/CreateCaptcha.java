@@ -2,6 +2,7 @@ package com.zhenhui.demo.sparklers.domain.interactor;
 
 import com.zhenhui.demo.sparklers.domain.executor.PostExecutionThread;
 import com.zhenhui.demo.sparklers.domain.executor.ThreadExecutor;
+import com.zhenhui.demo.sparklers.domain.model.Captcha;
 import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import io.reactivex.Observable;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,8 @@ public class CreateCaptcha extends UseCase<String, String> {
 
         return Observable.create((emitter) -> {
             try {
-                emitter.onNext(captchaRepository.createCaptcha(phone, true));
+                Captcha captcha = captchaRepository.createCaptcha(phone);
+                emitter.onNext(captcha.getCode());
                 emitter.onComplete();
             } catch (Exception e) {
                 emitter.onError(e);

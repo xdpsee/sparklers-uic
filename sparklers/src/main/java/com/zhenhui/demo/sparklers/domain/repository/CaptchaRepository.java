@@ -1,11 +1,15 @@
 package com.zhenhui.demo.sparklers.domain.repository;
 
+import com.zhenhui.demo.sparklers.domain.exception.CaptchaSendException;
+import com.zhenhui.demo.sparklers.domain.exception.ForbiddenException;
+import com.zhenhui.demo.sparklers.domain.model.Captcha;
+
 public interface CaptchaRepository {
 
-    String createCaptcha(String phone, boolean create);
+    Captcha createCaptcha(String phone) throws ForbiddenException, CaptchaSendException;
 
-    String lookupCaptcha(String phone);
+    Captcha lookupCaptcha(String phone);
 
-    void invalidCaptcha(String phone);
+    void invalidCaptcha(String phone, String captcha);
 
 }

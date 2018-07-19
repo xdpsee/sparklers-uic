@@ -1,6 +1,5 @@
 package com.zhenhui.demo.sparklers;
 
-import ai.grakn.redismock.RedisServer;
 import org.apache.curator.test.TestingServer;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -8,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import redis.embedded.RedisServer;
 
 @Transactional(transactionManager = "transactionManager")
 @RunWith(SpringRunner.class)
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class TestBase {
 
-    private RedisServer redisServer;
+    private static RedisServer redisServer;
 
     private static TestingServer zooKeeperServer;
 
@@ -23,24 +23,27 @@ public class TestBase {
     public static void setupBeforeClass() throws Exception {
         zooKeeperServer = new TestingServer(12181);
         zooKeeperServer.start();
+
+        redisServer = new RedisServer(9736);
+        redisServer.start();
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         zooKeeperServer.stop();
         zooKeeperServer = null;
+        redisServer.stop();
+        redisServer = null;
     }
 
     @Before
     public void setup() throws Exception {
-        redisServer = RedisServer.newRedisServer(9736);
-        redisServer.start();
+
     }
 
     @After
-    public void tearDown() throws Exception {
-        redisServer.stop();
-        redisServer = null;
+    public void tearDown() {
+
     }
 
     @Test

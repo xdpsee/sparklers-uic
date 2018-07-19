@@ -6,7 +6,7 @@ import lombok.Data;
 import org.hibernate.validator.constraints.ScriptAssert;
 
 @Data
-@ScriptAssert(lang = "javascript", script = "_this.secret != null || _this.captcha != null")
+@ScriptAssert(lang = "javascript", script = "_this.secret != null || _this.code != null")
 public class SigninWithSecretParams {
 
     @NotNull

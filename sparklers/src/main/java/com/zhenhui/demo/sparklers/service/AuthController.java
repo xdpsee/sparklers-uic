@@ -2,10 +2,7 @@ package com.zhenhui.demo.sparklers.service;
 
 import com.zhenhui.demo.sparklers.common.Error;
 import com.zhenhui.demo.sparklers.common.Result;
-import com.zhenhui.demo.sparklers.domain.exception.BadSecretException;
-import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
-import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
-import com.zhenhui.demo.sparklers.domain.exception.UserNotFoundException;
+import com.zhenhui.demo.sparklers.domain.exception.*;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninWithCaptcha;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninWithSecret;
 import com.zhenhui.demo.sparklers.security.BlacklistService;
@@ -95,8 +92,11 @@ public class AuthController {
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof CaptchaExpireException) {
-                    Result.newBuilder().error(Error.DATA_INVALID).message("验证码无效或已过期")
+                if (e instanceof CaptchaNotFoundException) {
+                    Result.newBuilder().error(Error.DATA_INVALID).message("验证码无效")
+                            .write(response);
+                } else if (e instanceof CaptchaExpireException) {
+                    Result.newBuilder().error(Error.DATA_INVALID).message("验证码已过期")
                             .write(response);
                 } else if (e instanceof CaptchaMismatchException) {
                     Result.newBuilder().error(Error.DATA_INVALID).message("验证码错误, 不匹配")

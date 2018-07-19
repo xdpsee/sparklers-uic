@@ -1,33 +1,29 @@
 package com.zhenhui.demo.sparklers.service;
 
-import java.util.Optional;
-
-import javax.servlet.AsyncContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.google.common.collect.Sets;
+import com.zhenhui.demo.sparklers.common.Error;
+import com.zhenhui.demo.sparklers.common.Result;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
+import com.zhenhui.demo.sparklers.domain.exception.CaptchaNotFoundException;
 import com.zhenhui.demo.sparklers.domain.exception.UserAlreadyExistException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser.Params;
 import com.zhenhui.demo.sparklers.domain.interactor.QueryUserWithId;
 import com.zhenhui.demo.sparklers.domain.model.User;
 import com.zhenhui.demo.sparklers.security.JsonWebTokenAuthentication;
-import com.zhenhui.demo.sparklers.common.Error;
 import com.zhenhui.demo.sparklers.service.params.CreateUserParams;
-import com.zhenhui.demo.sparklers.common.Result;
 import io.reactivex.observers.DefaultObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 @SuppressWarnings("unchecked")
 @RestController
@@ -43,7 +39,6 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PreAuthorize("hasAuthority('ADMIN')")
     @RequestMapping(method = RequestMethod.POST)
     public void createUser(@RequestBody CreateUserParams body,
                            HttpServletRequest request,
@@ -64,8 +59,11 @@ public class UserController {
 
                     @Override
                     public void onError(Throwable e) {
-                        if (e instanceof CaptchaExpireException) {
-                            Result.newBuilder().error(Error.DATA_INVALID).message("验证码无效或已过期")
+                        if (e instanceof CaptchaNotFoundException) {
+                            Result.newBuilder().error(Error.DATA_INVALID).message("验证码无效")
+                                    .write(response);
+                        } else if (e instanceof CaptchaExpireException) {
+                            Result.newBuilder().error(Error.DATA_INVALID).message("验证码已过期")
                                     .write(response);
                         } else if (e instanceof CaptchaMismatchException) {
                             Result.newBuilder().error(Error.DATA_INVALID).message("验证码错误, 不匹配")

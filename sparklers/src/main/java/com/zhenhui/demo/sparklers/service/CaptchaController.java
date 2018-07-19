@@ -32,8 +32,8 @@ public class CaptchaController {
             }
 
             @Override
-            public void onError(Throwable throwable) {
-                Result.newBuilder().error(Error.INTERNAL_ERROR).write(response);
+            public void onError(Throwable t) {
+                Result.newBuilder().error(Error.INTERNAL_ERROR).message(t.getMessage()).write(response);
                 context.complete();
             }
 

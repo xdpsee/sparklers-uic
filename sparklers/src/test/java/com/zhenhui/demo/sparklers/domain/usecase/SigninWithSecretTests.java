@@ -7,6 +7,7 @@ import com.zhenhui.demo.sparklers.domain.exception.UserNotFoundException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser.Params;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninWithSecret;
+import com.zhenhui.demo.sparklers.domain.model.Captcha;
 import com.zhenhui.demo.sparklers.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
@@ -34,8 +35,8 @@ public class SigninWithSecretTests extends TestBase {
         super.setup();
 
         TestObserver<Boolean> testObserver = new TestObserver<>();
-        String captcha = captchaRepository.createCaptcha("18000001234", true);
-        createUser.execute(new Params("18000001234", "12345678", Sets.newHashSet("USER"), captcha), testObserver);
+        Captcha captcha = captchaRepository.createCaptcha("18000001234");
+        createUser.execute(new Params("18000001234", "12345678", Sets.newHashSet("USER"), captcha.getCode()), testObserver);
         testObserver.assertResult(true).assertComplete();
     }
 

@@ -1,13 +1,12 @@
 package com.zhenhui.demo.sparklers.security;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.zhenhui.demo.sparklers.security.BlacklistService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection,unused")
 @Service(interfaceClass = BlacklistService.class)
 public class BlacklistServiceImpl implements BlacklistService, InitializingBean {
 
@@ -17,7 +16,7 @@ public class BlacklistServiceImpl implements BlacklistService, InitializingBean 
     private Cache cache;
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    public void afterPropertiesSet() {
         cache = cacheManager.getCache("blacklist");
     }
 
