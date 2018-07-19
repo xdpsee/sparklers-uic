@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.service;
+package com.zhenhui.demo.sparklers.restful;
 
 import com.google.common.collect.Sets;
 import com.zhenhui.demo.sparklers.common.Error;
@@ -11,8 +11,8 @@ import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser.Params;
 import com.zhenhui.demo.sparklers.domain.interactor.QueryUserWithId;
 import com.zhenhui.demo.sparklers.domain.model.User;
+import com.zhenhui.demo.sparklers.restful.params.CreateUserParams;
 import com.zhenhui.demo.sparklers.security.JsonWebTokenAuthentication;
-import com.zhenhui.demo.sparklers.service.params.CreateUserParams;
 import io.reactivex.observers.DefaultObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

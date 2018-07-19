@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.service;
+package com.zhenhui.demo.sparklers.data.repository;
 
 import com.zhenhui.demo.sparklers.TestBase;
 import com.zhenhui.demo.sparklers.domain.model.Captcha;

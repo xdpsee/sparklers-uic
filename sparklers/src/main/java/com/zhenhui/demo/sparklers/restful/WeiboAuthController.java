@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.service;
+package com.zhenhui.demo.sparklers.restful;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

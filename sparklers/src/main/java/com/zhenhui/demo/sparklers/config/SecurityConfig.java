@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/auth/token", "auth/token/with-code").permitAll()
+            .antMatchers(HttpMethod.GET, "/auth/token", "auth/token/captcha").permitAll()
             .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);

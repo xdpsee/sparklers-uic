@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.service;
+package com.zhenhui.demo.sparklers.restful;
 
 import com.zhenhui.demo.sparklers.common.Error;
 import com.zhenhui.demo.sparklers.common.Result;
@@ -8,8 +8,8 @@ import com.zhenhui.demo.sparklers.domain.interactor.SigninWithSecret;
 import com.zhenhui.demo.sparklers.security.BlacklistService;
 import com.zhenhui.demo.sparklers.security.JsonWebTokenAuthentication;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
-import com.zhenhui.demo.sparklers.service.params.SigninWithCaptchaParams;
-import com.zhenhui.demo.sparklers.service.params.SigninWithSecretParams;
+import com.zhenhui.demo.sparklers.restful.params.SigninWithCaptchaParams;
+import com.zhenhui.demo.sparklers.restful.params.SigninWithSecretParams;
 import io.reactivex.observers.DefaultObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -76,7 +76,7 @@ public class AuthController {
         });
     }
 
-    @RequestMapping(path = "/with-captcha", method = RequestMethod.POST)
+    @RequestMapping(path = "/captcha", method = RequestMethod.POST)
     public void createToken(@RequestBody SigninWithCaptchaParams body,
                             HttpServletRequest request,
                             HttpServletResponse response) {

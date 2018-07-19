@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.service;
+package com.zhenhui.demo.sparklers.restful;
 
 import com.zhenhui.demo.sparklers.domain.interactor.CreateCaptcha;
 import com.zhenhui.demo.sparklers.common.Error;

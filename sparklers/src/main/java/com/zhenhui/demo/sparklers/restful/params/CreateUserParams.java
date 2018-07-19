@@ -1,4 +1,4 @@
-package com.zhenhui.demo.sparklers.service.params;
+package com.zhenhui.demo.sparklers.restful.params;
 
 import lombok.Data;
 
