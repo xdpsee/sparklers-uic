@@ -2,7 +2,6 @@ package com.zhenhui.demo.sparklers.domain.usecase;
 
 import com.google.common.collect.Sets;
 import com.zhenhui.demo.sparklers.TestBase;
-import com.zhenhui.demo.sparklers.domain.exception.CaptchaExpireException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaMismatchException;
 import com.zhenhui.demo.sparklers.domain.exception.CaptchaNotFoundException;
 import com.zhenhui.demo.sparklers.domain.interactor.CreateUser;
@@ -28,7 +27,6 @@ public class SigninWithCaptchaTests extends TestBase {
 
     @Before
     public void setup() throws Exception  {
-        super.setup();
 
         TestObserver<Boolean> testObserver = new TestObserver<>();
 

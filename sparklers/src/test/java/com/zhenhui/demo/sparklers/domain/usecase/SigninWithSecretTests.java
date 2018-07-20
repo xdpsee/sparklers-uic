@@ -32,7 +32,6 @@ public class SigninWithSecretTests extends TestBase {
 
     @Before
     public void setup() throws Exception {
-        super.setup();
 
         TestObserver<Boolean> testObserver = new TestObserver<>();
         Captcha captcha = captchaRepository.createCaptcha("18000001234");
