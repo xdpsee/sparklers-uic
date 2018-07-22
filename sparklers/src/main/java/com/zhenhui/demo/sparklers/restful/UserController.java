@@ -85,7 +85,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('USER')")
-    @RequestMapping(path = "/me", method = RequestMethod.GET)
+    @RequestMapping(path = "/me", method = RequestMethod.POST)
     public void currentUser(HttpServletRequest request, HttpServletResponse response) {
 
         final AsyncContext context = request.startAsync();
@@ -118,7 +118,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
-    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{id}", method = RequestMethod.POST)
     public void getUser(@PathVariable("id") long userId, HttpServletRequest request, HttpServletResponse response) {
 
         final AsyncContext context = request.startAsync();

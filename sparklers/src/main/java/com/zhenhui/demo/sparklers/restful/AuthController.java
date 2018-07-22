@@ -5,11 +5,11 @@ import com.zhenhui.demo.sparklers.common.Result;
 import com.zhenhui.demo.sparklers.domain.exception.*;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninWithCaptcha;
 import com.zhenhui.demo.sparklers.domain.interactor.SigninWithSecret;
+import com.zhenhui.demo.sparklers.restful.params.SigninWithCaptchaParams;
+import com.zhenhui.demo.sparklers.restful.params.SigninWithSecretParams;
 import com.zhenhui.demo.sparklers.security.BlacklistService;
 import com.zhenhui.demo.sparklers.security.JsonWebTokenAuthentication;
 import com.zhenhui.demo.sparklers.security.TokenUtils;
-import com.zhenhui.demo.sparklers.restful.params.SigninWithCaptchaParams;
-import com.zhenhui.demo.sparklers.restful.params.SigninWithSecretParams;
 import io.reactivex.observers.DefaultObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +23,7 @@ import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@SuppressWarnings("SpringJavaAutowiringInspection,unchecked")
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection,unchecked")
 @RestController
 @RequestMapping("/auth/token")
 public class AuthController {
@@ -121,14 +121,21 @@ public class AuthController {
 
     @PreAuthorize("hasAuthority('USER')")
     @RequestMapping(method = RequestMethod.PATCH)
-    public void refreshToken(HttpServletResponse response) {
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
 
         final JsonWebTokenAuthentication authentication = (JsonWebTokenAuthentication) SecurityContextHolder.getContext()
                 .getAuthentication();
 
-        Result.newBuilder().error(Error.NONE)
-                .data(tokenUtils.createToken(authentication.principal))
-                .write(response);
+        try {
+            final String token = (String) request.getAttribute("token");
+            blacklistService.block(token);
+
+            Result.newBuilder().error(Error.NONE)
+                    .data(tokenUtils.createToken(authentication.principal))
+                    .write(response);
+        } catch (Exception e) {
+            Result.newBuilder().error(Error.INTERNAL_ERROR).message("服务不可用").write(response);
+        }
     }
 
     @PreAuthorize("hasAuthority('USER')")

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Component
 public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
 
@@ -26,6 +27,7 @@ public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenUtils tokenUtils;
 
+    @Autowired
     @Reference
     private BlacklistService blacklistService;
 
