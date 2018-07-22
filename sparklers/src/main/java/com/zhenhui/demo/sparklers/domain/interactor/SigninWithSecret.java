@@ -48,8 +48,7 @@ public class SigninWithSecret extends UseCase<Params, String> {
             if (null == user) {
                 emitter.onError(new UserNotFoundException(params.phone));
             } else {
-                if (!passwordEncoder.matches(user.getSecret()
-                    , passwordEncoder.encode(params.secret))) {
+                if (!passwordEncoder.matches(params.secret, user.getSecret())) {
                     emitter.onError(new BadSecretException(""));
                 } else {
                     emitter.onNext(tokenUtils.createToken(user.toPrincipal()));

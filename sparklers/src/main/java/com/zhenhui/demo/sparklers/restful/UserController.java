@@ -40,17 +40,17 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @RequestMapping(method = RequestMethod.POST)
-    public void createUser(@RequestBody CreateUserParams body,
+    public void createUser(@RequestBody CreateUserParams params,
                            HttpServletRequest request,
                            HttpServletResponse response) {
 
         final AsyncContext context = request.startAsync();
         context.setTimeout(6000);
 
-        createUser.execute(new Params(body.getPhone()
-                        , passwordEncoder.encode(body.getSecret())
+        createUser.execute(new Params(params.getPhone()
+                        , passwordEncoder.encode(params.getSecret())
                         , Sets.newHashSet("USER")
-                        , body.getCaptcha()),
+                        , params.getCaptcha()),
                 new DefaultObserver<Boolean>() {
                     @Override
                     public void onNext(Boolean success) {

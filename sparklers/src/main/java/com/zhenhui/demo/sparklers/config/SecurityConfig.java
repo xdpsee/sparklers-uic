@@ -1,6 +1,7 @@
 package com.zhenhui.demo.sparklers.config;
 
 import com.zhenhui.demo.sparklers.security.AccessDeniedHandlerImpl;
+import com.zhenhui.demo.sparklers.security.HTTP403ForbiddenEntryPoint;
 import com.zhenhui.demo.sparklers.security.JsonWebTokenAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -32,12 +33,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
             .csrf().disable()
-            .exceptionHandling().accessDeniedHandler(new AccessDeniedHandlerImpl())
+            .exceptionHandling()
+                .accessDeniedHandler(new AccessDeniedHandlerImpl())
+                .authenticationEntryPoint(new HTTP403ForbiddenEntryPoint())
             .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+            .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/auth/token", "auth/token/captcha").permitAll()
-            .anyRequest().authenticated();
+            .antMatchers(HttpMethod.POST, "/auth/token", "auth/token/captcha", "/captcha")
+                .permitAll()
+                .antMatchers(HttpMethod.POST, "/user")
+                .permitAll()
+            .anyRequest()
+                .authenticated();
 
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

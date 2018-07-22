@@ -33,7 +33,7 @@ public class CaptchaProtector {
             return true;
         }
 
-        return accessCache.exists(phone);
+        return !accessCache.exists(phone);
     }
 
     public void pass(String phone) {

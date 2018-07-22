@@ -19,7 +19,7 @@ public class CaptchaController {
     @Autowired
     private CreateCaptcha createCaptcha;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.POST)
     public void getCaptcha(@RequestParam String phone, HttpServletRequest request, HttpServletResponse response) {
 
         final AsyncContext context = request.startAsync();
