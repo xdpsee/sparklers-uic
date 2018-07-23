@@ -27,7 +27,6 @@ public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenUtils tokenUtils;
 
-    @Autowired
     @Reference
     private BlacklistService blacklistService;
 
