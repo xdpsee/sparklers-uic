@@ -8,7 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection,unused")
-@Service(interfaceClass = BlacklistService.class)
+@Service(
+        interfaceClass = BlacklistService.class,
+        version = "1.0.0",
+        application = "${dubbo.application.id}",
+        protocol = "${dubbo.protocol.id}",
+        registry = "${dubbo.registry.id}"
+)
 public class BlacklistServiceImpl implements BlacklistService {
 
     @Autowired

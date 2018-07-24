@@ -25,7 +25,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@SuppressWarnings("SpringJavaAutowiringInspection")
+@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Configuration
 public class AppConfig {
 

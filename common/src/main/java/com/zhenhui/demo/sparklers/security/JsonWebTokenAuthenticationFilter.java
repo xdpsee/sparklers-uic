@@ -27,7 +27,13 @@ public class JsonWebTokenAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private TokenUtils tokenUtils;
 
-    @Reference
+    @Reference(
+            interfaceClass = BlacklistService.class,
+            version = "1.0.0",
+            application = "${sparklers.security.dubbo.application.id}",
+            registry = "${sparklers.security.dubbo.registry.id}",
+            check = false
+    )
     private BlacklistService blacklistService;
 
     @Override
