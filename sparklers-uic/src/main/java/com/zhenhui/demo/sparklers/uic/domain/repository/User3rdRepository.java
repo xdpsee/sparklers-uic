@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface User3rdRepository {
 
-    User3rd create3rdUser(User3rd user3rd);
+    void create3rdUser(User3rd user3rd);
 
     User3rd get3rdUser(SocialType type, String openId);
 

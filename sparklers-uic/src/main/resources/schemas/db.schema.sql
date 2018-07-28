@@ -17,3 +17,14 @@ CREATE TABLE `user` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4;
 
+drop table `user3rd`;
+CREATE TABLE `user3rd` (
+  `type`      varchar(64)   NOT NULL,
+  `open_id`   varchar(16)   NOT NULL,
+  `nickname`  varchar(32)   DEFAULT '',
+  `avatar`    varchar(255)  DEFAULT '',
+  `user_id`   BIGINT(20)    DEFAULT 0,
+  UNIQUE KEY `uk_1` (`type`,`open_id`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4;

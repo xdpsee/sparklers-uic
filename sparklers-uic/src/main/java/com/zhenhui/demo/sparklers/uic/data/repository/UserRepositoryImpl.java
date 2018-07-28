@@ -1,9 +1,5 @@
 package com.zhenhui.demo.sparklers.uic.data.repository;
 
-import java.util.Arrays;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.zhenhui.demo.sparklers.data.jooq.Tables;
 import com.zhenhui.demo.sparklers.data.jooq.tables.records.UserRecord;
 import com.zhenhui.demo.sparklers.uic.domain.model.User;
@@ -12,8 +8,11 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static com.zhenhui.demo.sparklers.data.jooq.tables.User.USER;
-import static org.jooq.impl.DSL.exists;
 
 @Component
 public class UserRepositoryImpl implements UserRepository {

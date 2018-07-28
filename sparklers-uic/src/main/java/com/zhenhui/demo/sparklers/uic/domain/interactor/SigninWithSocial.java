@@ -13,6 +13,7 @@ import com.zhenhui.demo.sparklers.uic.domain.th3rd.OpenUserInfo;
 import com.zhenhui.demo.sparklers.uic.domain.th3rd.Token3rdVerify;
 import com.zhenhui.demo.sparklers.uic.security.TokenUtils;
 import io.reactivex.Observable;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,7 @@ public class SigninWithSocial extends UseCase<SigninWithSocial.Params, String> {
     private final User3rdRepository user3rdRepository;
 
     @Data
+    @AllArgsConstructor
     public static class Params {
         private SocialType socialType;
         private String token;

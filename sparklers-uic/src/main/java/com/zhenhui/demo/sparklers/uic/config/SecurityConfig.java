@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/auth/token", "auth/token/captcha", "/captcha")
+            .antMatchers(HttpMethod.POST, "/auth/token", "auth/token/captcha", "/auth/weibo", "/captcha")
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/user")
                 .permitAll()
