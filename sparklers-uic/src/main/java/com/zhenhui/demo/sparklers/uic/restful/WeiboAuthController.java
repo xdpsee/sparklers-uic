@@ -82,8 +82,18 @@ public class WeiboAuthController {
             @Override
             public void onError(Throwable e) {
 
-                if (e instanceof CaptchaNotFoundException|| e instanceof CaptchaExpireException ||  e instanceof CaptchaMismatchException) {
-                    Result.newBuilder().error(Error.INVALID_INPUT).message(e.getMessage()).write(response);
+                if (e instanceof CaptchaNotFoundException) {
+                    Result.newBuilder().error(Error.DATA_INVALID).message("验证码无效")
+                            .write(response);
+                } else if (e instanceof CaptchaExpireException) {
+                    Result.newBuilder().error(Error.DATA_INVALID).message("验证码已过期")
+                            .write(response);
+                } else if (e instanceof CaptchaMismatchException) {
+                    Result.newBuilder().error(Error.DATA_INVALID).message("验证码错误, 不匹配")
+                            .write(response);
+                } else if (e instanceof UserNotFoundException) {
+                    Result.newBuilder().error(Error.DATA_NOT_FOUND).message("用户不存在")
+                            .write(response);
                 } else if (e instanceof Auth3rdUserException) {
                     Result.newBuilder().error(Error.DATA_INVALID).message(e.getMessage()).write(response);
                 } else {

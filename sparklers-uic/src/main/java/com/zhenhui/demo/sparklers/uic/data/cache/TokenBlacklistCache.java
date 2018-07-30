@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class BlacklistCache extends AbstractValue<String, Boolean> {
+public class TokenBlacklistCache extends AbstractValue<String, Boolean> {
 
     @Autowired
-    public BlacklistCache(Serializer<String> keySerializer
+    public TokenBlacklistCache(Serializer<String> keySerializer
             , Serializer<Boolean> valueSerializer
             , @Value("${jwt.ttl}") Integer expireSeconds) {
         super("", keySerializer, valueSerializer, expireSeconds, TimeUnit.SECONDS);

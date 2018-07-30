@@ -9,6 +9,7 @@ import com.zhenhui.demo.sparklers.uic.domain.model.Captcha;
 import com.zhenhui.demo.sparklers.uic.domain.model.User;
 import com.zhenhui.demo.sparklers.uic.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.uic.domain.repository.UserRepository;
+import com.zhenhui.demo.sparklers.uic.utils.CaptchaUtil;
 import io.reactivex.observers.TestObserver;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class QueryUserWithIdTests extends TestBase {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CaptchaUtil captchaUtil;
     @Autowired
     private CaptchaRepository captchaRepository;
 
@@ -39,7 +42,7 @@ public class QueryUserWithIdTests extends TestBase {
 
         TestObserver<Boolean> createUserObserver = new TestObserver<>();
 
-        CreateUser createUser = new CreateUser(null, null, userRepository, captchaRepository);
+        CreateUser createUser = new CreateUser(null, null, userRepository, captchaUtil);
 
         Captcha captcha = captchaRepository.createCaptcha("13402022080");
         createUser.execute(new Params("13402022080", "12345678", Sets.newHashSet("USER"), captcha.getCode()), createUserObserver);

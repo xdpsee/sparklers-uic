@@ -5,63 +5,65 @@ import com.zhenhui.demo.sparklers.uic.domain.executor.PostExecutionThread;
 import com.zhenhui.demo.sparklers.uic.domain.executor.ThreadExecutor;
 import com.zhenhui.demo.sparklers.uic.domain.model.User;
 import com.zhenhui.demo.sparklers.uic.domain.repository.UserRepository;
-import com.zhenhui.demo.sparklers.uic.security.TokenUtils;
 import com.zhenhui.demo.sparklers.uic.utils.CaptchaUtil;
 import io.reactivex.Observable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * exceptions: UserNotFoundException,
- */
 @Component
-public class SigninWithCaptcha extends UseCase<SigninWithCaptcha.Params, String> {
+public class ResetSecret extends UseCase<ResetSecret.Params, Boolean> {
 
     private final UserRepository userRepository;
-    private final TokenUtils tokenUtils;
+
     private final CaptchaUtil captchaUtil;
 
     @Autowired
-    public SigninWithCaptcha(ThreadExecutor threadExecutor,
-                             PostExecutionThread postExecutionThread,
-                             UserRepository userRepository,
-                             TokenUtils tokenUtils,
-                             CaptchaUtil captchaUtil) {
+    public ResetSecret(ThreadExecutor threadExecutor,
+                       PostExecutionThread postExecutionThread,
+                       UserRepository userRepository,
+                       CaptchaUtil captchaUtil) {
         super(threadExecutor, postExecutionThread);
         this.userRepository = userRepository;
-        this.tokenUtils = tokenUtils;
         this.captchaUtil = captchaUtil;
     }
 
     @Override
-    Observable<String> buildObservable(Params params) {
+    Observable<Boolean> buildObservable(Params params) {
 
         return Observable.create((emitter) -> {
 
-            captchaUtil.verifyCaptcha(params.phone, params.captcha);
+            try {
+                final User user = userRepository.getUser(params.phone);
+                if (null == user) {
+                    throw new UserNotFoundException(params.phone);
+                }
 
-            final User user = userRepository.getUser(params.phone);
-            if (null == user) {
-                emitter.onError(new UserNotFoundException(params.phone));
+                captchaUtil.verifyCaptcha(params.phone, params.captcha);
 
-            } else {
-                captchaUtil.clearCaptcha(params.phone, params.captcha);
-
-                emitter.onNext(tokenUtils.createToken(user.toPrincipal()));
+                emitter.onNext(userRepository.updateSecret(params.phone, params.secret));
                 emitter.onComplete();
+
+            } catch (Exception e) {
+                emitter.onError(e);
             }
+
         });
+
     }
 
     @Data
+    @NoArgsConstructor
     @AllArgsConstructor
     public static class Params {
 
         private String phone;
 
         private String captcha;
+
+        private String secret;
 
     }
 

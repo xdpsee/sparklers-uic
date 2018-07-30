@@ -2,8 +2,7 @@ package com.zhenhui.demo.sparklers.uic.security;
 
 import com.alibaba.dubbo.config.annotation.Service;
 import com.google.common.cache.CacheBuilder;
-import com.zhenhui.demo.sparklers.uic.security.JsonWebTokenBlacklistService;
-import com.zhenhui.demo.sparklers.uic.data.cache.BlacklistCache;
+import com.zhenhui.demo.sparklers.uic.data.cache.TokenBlacklistCache;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.TimeUnit;
@@ -19,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class JsonWebTokenBlacklistServiceImpl implements JsonWebTokenBlacklistService {
 
     @Autowired
-    private BlacklistCache blacklistCache;
+    private TokenBlacklistCache tokenBlacklistCache;
 
     private final com.google.common.cache.Cache<String, Boolean> memoryCache = CacheBuilder.newBuilder()
             .expireAfterWrite(6, TimeUnit.SECONDS)
@@ -33,7 +32,7 @@ public class JsonWebTokenBlacklistServiceImpl implements JsonWebTokenBlacklistSe
             return blocked;
         }
 
-        blocked = blacklistCache.exists(token);
+        blocked = tokenBlacklistCache.exists(token);
         memoryCache.put(token, blocked);
 
         return blocked;
@@ -42,7 +41,7 @@ public class JsonWebTokenBlacklistServiceImpl implements JsonWebTokenBlacklistSe
     @Override
     public void block(String token) {
 
-        blacklistCache.put(token, true);
+        tokenBlacklistCache.put(token, true);
 
         memoryCache.invalidate(token);
 

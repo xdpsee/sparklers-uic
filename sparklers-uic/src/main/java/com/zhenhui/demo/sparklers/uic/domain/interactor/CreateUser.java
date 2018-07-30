@@ -7,8 +7,8 @@ import com.zhenhui.demo.sparklers.uic.domain.exception.UserAlreadyExistException
 import com.zhenhui.demo.sparklers.uic.domain.executor.PostExecutionThread;
 import com.zhenhui.demo.sparklers.uic.domain.executor.ThreadExecutor;
 import com.zhenhui.demo.sparklers.uic.domain.model.Captcha;
-import com.zhenhui.demo.sparklers.uic.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.uic.domain.repository.UserRepository;
+import com.zhenhui.demo.sparklers.uic.utils.CaptchaUtil;
 import com.zhenhui.demo.sparklers.uic.utils.ExceptionUtils;
 import io.reactivex.Observable;
 import lombok.AllArgsConstructor;
@@ -26,16 +26,16 @@ public class CreateUser extends UseCase<CreateUser.Params, Boolean> {
 
     private final UserRepository userRepository;
 
-    private final CaptchaRepository captchaRepository;
+    private final CaptchaUtil captchaUtil;
 
     @Autowired
     public CreateUser(ThreadExecutor threadExecutor,
                       PostExecutionThread postExecutionThread,
                       UserRepository userRepository,
-                      CaptchaRepository captchaRepository) {
+                      CaptchaUtil captchaUtil) {
         super(threadExecutor, postExecutionThread);
         this.userRepository = userRepository;
-        this.captchaRepository = captchaRepository;
+        this.captchaUtil = captchaUtil;
     }
 
     @Override
@@ -43,25 +43,13 @@ public class CreateUser extends UseCase<CreateUser.Params, Boolean> {
 
         return Observable.create((emitter) -> {
             try {
-                final Captcha captcha = captchaRepository.lookupCaptcha(params.phone);
-                if (null == captcha) {
-                    emitter.onError(new CaptchaNotFoundException(params.captcha));
-                    return;
-                }
-
-                if (captcha.getExpireAt() <= System.currentTimeMillis()) {
-                    emitter.onError(new CaptchaExpireException());
-                    return;
-                }
-
-                if (!captcha.getCode().equals(params.captcha)) {
-                    emitter.onError(new CaptchaMismatchException());
-                    return;
-                }
-
-                captchaRepository.invalidCaptcha(params.phone, captcha.getCode());
+                captchaUtil.verifyCaptcha(params.phone, params.captcha);
 
                 boolean success = userRepository.createUser(params.phone, params.secret, params.authorities);
+                if (success) {
+                    captchaUtil.clearCaptcha(params.phone, params.captcha);
+                }
+
                 emitter.onNext(success);
                 emitter.onComplete();
             } catch (Exception e) {

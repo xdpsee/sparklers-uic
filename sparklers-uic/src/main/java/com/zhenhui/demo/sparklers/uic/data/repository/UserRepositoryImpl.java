@@ -6,6 +6,8 @@ import com.zhenhui.demo.sparklers.uic.domain.model.User;
 import com.zhenhui.demo.sparklers.uic.domain.repository.UserRepository;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Caching;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -19,6 +21,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Autowired
     private DSLContext context;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User getUser(long userId) {
@@ -54,6 +58,18 @@ public class UserRepositoryImpl implements UserRepository {
                 .set(USER.AUTHORITIES, String.join(",", authorities))
                 .execute();
         return rows == 1;
+    }
+
+    @Override
+    public boolean updateSecret(String phone, String secret) {
+
+        final int rows = context.update(USER)
+                .set(USER.SECRET, passwordEncoder.encode(secret))
+                .where(USER.PHONE.eq(phone))
+                .execute();
+
+        return rows == 1;
+        
     }
 
     private User fromRecord(UserRecord record) {

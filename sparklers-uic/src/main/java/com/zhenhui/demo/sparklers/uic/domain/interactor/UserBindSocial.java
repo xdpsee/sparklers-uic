@@ -3,20 +3,16 @@ package com.zhenhui.demo.sparklers.uic.domain.interactor;
 import com.google.common.collect.Sets;
 import com.zhenhui.demo.sparklers.uic.common.SocialType;
 import com.zhenhui.demo.sparklers.uic.domain.exception.Auth3rdUserException;
-import com.zhenhui.demo.sparklers.uic.domain.exception.CaptchaExpireException;
-import com.zhenhui.demo.sparklers.uic.domain.exception.CaptchaMismatchException;
-import com.zhenhui.demo.sparklers.uic.domain.exception.CaptchaNotFoundException;
 import com.zhenhui.demo.sparklers.uic.domain.executor.PostExecutionThread;
 import com.zhenhui.demo.sparklers.uic.domain.executor.ThreadExecutor;
-import com.zhenhui.demo.sparklers.uic.domain.model.Captcha;
 import com.zhenhui.demo.sparklers.uic.domain.model.User;
 import com.zhenhui.demo.sparklers.uic.domain.model.User3rd;
-import com.zhenhui.demo.sparklers.uic.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.uic.domain.repository.User3rdRepository;
 import com.zhenhui.demo.sparklers.uic.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.uic.domain.th3rd.OpenUserInfo;
 import com.zhenhui.demo.sparklers.uic.domain.th3rd.Token3rdVerify;
 import com.zhenhui.demo.sparklers.uic.security.TokenUtils;
+import com.zhenhui.demo.sparklers.uic.utils.CaptchaUtil;
 import io.reactivex.Observable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +26,7 @@ public class UserBindSocial extends UseCase<UserBindSocial.Params, String> {
 
     private final UserRepository userRepository;
 
-    private final CaptchaRepository captchaRepository;
+    private final CaptchaUtil captchaUtil;
 
     private final TokenUtils tokenUtils;
 
@@ -45,13 +41,13 @@ public class UserBindSocial extends UseCase<UserBindSocial.Params, String> {
     public UserBindSocial(ThreadExecutor threadExecutor,
                           PostExecutionThread postExecutionThread,
                           UserRepository userRepository,
-                          CaptchaRepository captchaRepository,
+                          CaptchaUtil captchaUtil,
                           TokenUtils tokenUtils,
                           Token3rdVerify token3rdVerify,
                           User3rdRepository user3rdRepository) {
         super(threadExecutor, postExecutionThread);
         this.userRepository = userRepository;
-        this.captchaRepository = captchaRepository;
+        this.captchaUtil = captchaUtil;
         this.tokenUtils = tokenUtils;
         this.token3rdVerify = token3rdVerify;
         this.user3rdRepository = user3rdRepository;
@@ -62,7 +58,7 @@ public class UserBindSocial extends UseCase<UserBindSocial.Params, String> {
 
         return Observable.create((emitter) -> {
             try {
-                verifyCaptcha(params.phone, params.captcha);
+                captchaUtil.verifyCaptcha(params.phone, params.captcha);
                 final User3rd user3rd = getUser3rd(params.type, params.token);
 
                 User user = userRepository.getUser(user3rd.getUserId());
@@ -72,7 +68,7 @@ public class UserBindSocial extends UseCase<UserBindSocial.Params, String> {
                     throw new Auth3rdUserException("改账号已被另一手机绑定");
                 }
 
-                captchaRepository.invalidCaptcha(params.phone, params.captcha);
+                captchaUtil.clearCaptcha(params.phone, params.captcha);
 
                 emitter.onNext(tokenUtils.createToken(user.toPrincipal()));
                 emitter.onComplete();
@@ -81,22 +77,6 @@ public class UserBindSocial extends UseCase<UserBindSocial.Params, String> {
                 emitter.onError(e);
             }
         });
-    }
-
-    private void verifyCaptcha(String phone, String code) throws CaptchaNotFoundException
-            , CaptchaExpireException, CaptchaMismatchException {
-        final Captcha captcha = captchaRepository.lookupCaptcha(phone);
-        if (null == captcha) {
-            throw new CaptchaNotFoundException(code);
-        }
-
-        if (captcha.getExpireAt() <= System.currentTimeMillis()) {
-            throw new CaptchaExpireException(code);
-        }
-
-        if (!captcha.getCode().equals(code)) {
-            throw new CaptchaMismatchException();
-        }
     }
 
     private User3rd getUser3rd(SocialType type, String token) throws Auth3rdUserException {

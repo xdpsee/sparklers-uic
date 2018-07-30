@@ -10,6 +10,7 @@ import com.zhenhui.demo.sparklers.uic.domain.model.Captcha;
 import com.zhenhui.demo.sparklers.uic.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.uic.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.uic.security.TokenUtils;
+import com.zhenhui.demo.sparklers.uic.utils.CaptchaUtil;
 import io.reactivex.observers.TestObserver;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,8 @@ public class SigninWithCaptchaTests extends TestBase {
     private TokenUtils tokenUtils;
     @Autowired
     private CaptchaRepository captchaRepository;
+    @Autowired
+    private CaptchaUtil captchaUtil;
 
 
     @Before
@@ -31,7 +34,7 @@ public class SigninWithCaptchaTests extends TestBase {
         TestObserver<Boolean> testObserver = new TestObserver<>();
 
         Captcha captcha = captchaRepository.createCaptcha("13818886666");
-        CreateUser createUser = new CreateUser(null, null, userRepository, captchaRepository);
+        CreateUser createUser = new CreateUser(null, null, userRepository, captchaUtil);
         createUser.execute(new CreateUser.Params("13818886666", "12345678", Sets.newHashSet("USER"), captcha.getCode()), testObserver);
 
         testObserver.assertResult(true).assertComplete();
@@ -44,7 +47,7 @@ public class SigninWithCaptchaTests extends TestBase {
                 , null
                 , userRepository
                 , tokenUtils
-                , captchaRepository);
+                , captchaUtil);
 
         TestObserver<String> testObserver = new TestObserver<>();
         signinWithCaptcha.execute(new SigninWithCaptcha.Params("13818886666", "----"), testObserver);
@@ -60,7 +63,7 @@ public class SigninWithCaptchaTests extends TestBase {
                 , null
                 , userRepository
                 , tokenUtils
-                , captchaRepository);
+                , captchaUtil);
 
         captchaRepository.createCaptcha("13818886666");
 

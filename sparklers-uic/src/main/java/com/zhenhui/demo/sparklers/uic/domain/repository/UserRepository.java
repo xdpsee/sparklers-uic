@@ -14,6 +14,8 @@ public interface UserRepository {
 
     boolean createUser(String phone, String secret, Set<String> authorities);
 
+    boolean updateSecret(String phone, String secret);
+
 }
 
 
