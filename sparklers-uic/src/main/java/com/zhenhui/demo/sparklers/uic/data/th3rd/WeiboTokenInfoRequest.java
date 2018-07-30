@@ -17,12 +17,13 @@ public class WeiboTokenInfoRequest implements TokenInfoRequest {
 
     private static final Logger logger = LoggerFactory.getLogger(WeiboTokenInfoRequest.class);
 
-    private static final String URL_FORMAT = "https://api.weibo.com/oauth2/get_token_info?access_token=%s";
+    private static final String URL_FORMAT = "https://api.weibo.com/2/users/show.json?access_token=%s";
 
     @Override
     public OpenUserInfo execute(String token) {
 
         Request request = new Request.Builder()
+                .get()
                 .url(String.format(URL_FORMAT, token))
                 .build();
 
@@ -38,9 +39,9 @@ public class WeiboTokenInfoRequest implements TokenInfoRequest {
 
             OpenUserInfo userInfo = new OpenUserInfo();
             userInfo.setSocialType(SocialType.WEIBO);
-            userInfo.setOpenId(result.get("uid").toString());
-            userInfo.setNickname("");
-            userInfo.setAvatar("");
+            userInfo.setOpenId(result.get("id").toString());
+            userInfo.setNickname(result.get("screen_name").toString());
+            userInfo.setAvatar(result.get("avatar_large").toString());
 
             return userInfo;
 
