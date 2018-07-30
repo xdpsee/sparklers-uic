@@ -72,6 +72,8 @@ public class UserBindSocial extends UseCase<UserBindSocial.Params, String> {
                     throw new Auth3rdUserException("改账号已被另一手机绑定");
                 }
 
+                captchaRepository.invalidCaptcha(params.phone, params.captcha);
+
                 emitter.onNext(tokenUtils.createToken(user.toPrincipal()));
                 emitter.onComplete();
 
