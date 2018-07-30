@@ -4,4 +4,8 @@ public class CaptchaExpireException extends Exception {
 
     public CaptchaExpireException() {
     }
+
+    public CaptchaExpireException(String message) {
+        super(message);
+    }
 }

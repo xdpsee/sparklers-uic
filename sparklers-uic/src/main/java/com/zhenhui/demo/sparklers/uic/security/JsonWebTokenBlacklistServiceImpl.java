@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
         protocol = "${dubbo.protocol.id}",
         registry = "${dubbo.registry.id}"
 )
-public class BlacklistServiceImpl implements JsonWebTokenBlacklistService {
+public class JsonWebTokenBlacklistServiceImpl implements JsonWebTokenBlacklistService {
 
     @Autowired
     private BlacklistCache blacklistCache;
