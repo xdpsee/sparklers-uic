@@ -7,6 +7,9 @@ import com.zhenhui.demo.sparklers.uic.domain.repository.User3rdRepository;
 import com.zhenhui.demo.sparklers.uic.utils.ExceptionUtils;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,6 +23,13 @@ public class User3rdRepositoryImpl implements User3rdRepository {
     @Autowired
     private DSLContext context;
 
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "user3rd", key = "#user3rd.type+#user3rd.openId"),
+                    @CacheEvict(cacheNames = "user3rd", key = "#user3rd.userId")
+
+            }
+    )
     @Override
     public void create3rdUser(User3rd user3rd) {
 
@@ -38,6 +48,7 @@ public class User3rdRepositoryImpl implements User3rdRepository {
         }
     }
 
+    @Cacheable(cacheNames = "user3rd", key = "#type+#openId")
     @Override
     public User3rd get3rdUser(SocialType type, String openId) {
 
@@ -53,6 +64,7 @@ public class User3rdRepositoryImpl implements User3rdRepository {
         return new User3rd(SocialType.valueOf(record.getType()), record.getOpenId(), record.getNickname(), record.getAvatar(), record.getUserId());
     }
 
+    @Cacheable(cacheNames = "user3rd", key = "#userId")
     @Override
     public List<User3rd> get3rdUsers(long userId) {
 

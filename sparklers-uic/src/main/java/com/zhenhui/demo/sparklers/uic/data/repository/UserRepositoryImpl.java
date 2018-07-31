@@ -6,9 +6,12 @@ import com.zhenhui.demo.sparklers.uic.domain.model.User;
 import com.zhenhui.demo.sparklers.uic.domain.repository.UserRepository;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Set;
@@ -24,6 +27,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Cacheable(cacheNames = "user", key = "#userId") // userId
     @Override
     public User getUser(long userId) {
 
@@ -35,17 +39,13 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    @Cacheable(cacheNames = "user", key = "#phone") // phone
     public User getUser(String phone) {
         final UserRecord record = context.selectFrom(Tables.USER)
                 .where(Tables.USER.PHONE.eq(phone))
                 .fetchOneInto(UserRecord.class);
 
         return record != null ? fromRecord(record) : null;
-    }
-
-    @Override
-    public boolean userExists(long userId) {
-        return context.fetchExists(Tables.USER, Tables.USER.ID.eq(userId));
     }
 
     @Override
@@ -60,16 +60,27 @@ public class UserRepositoryImpl implements UserRepository {
         return rows == 1;
     }
 
+    @Caching(
+            evict = {
+                    @CacheEvict(cacheNames = "user", key = "#phone"),
+                    @CacheEvict(cacheNames = "user", key = "#result.id", condition = "#result!=null"),
+            }
+    )
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public boolean updateSecret(String phone, String secret) {
+    public User updateSecret(String phone, String secret) {
 
         final int rows = context.update(USER)
                 .set(USER.SECRET, passwordEncoder.encode(secret))
                 .where(USER.PHONE.eq(phone))
                 .execute();
+        if (rows == 1) {
+            return fromRecord(context.selectFrom(Tables.USER)
+                    .where(Tables.USER.PHONE.eq(phone))
+                    .fetchOneInto(UserRecord.class));
+        }
 
-        return rows == 1;
-        
+        return null;
     }
 
     private User fromRecord(UserRecord record) {

@@ -43,7 +43,7 @@ public class ResetSecret extends UseCase<ResetSecret.Params, Boolean> {
 
                 captchaUtil.verifyCaptcha(params.phone, params.captcha);
 
-                emitter.onNext(userRepository.updateSecret(params.phone, params.secret));
+                emitter.onNext(userRepository.updateSecret(params.phone, params.secret) != null);
                 emitter.onComplete();
 
             } catch (Exception e) {

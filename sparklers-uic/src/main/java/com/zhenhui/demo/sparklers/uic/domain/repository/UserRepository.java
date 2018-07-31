@@ -10,11 +10,9 @@ public interface UserRepository {
 
     User getUser(String phone);
 
-    boolean userExists(long userId);
-
     boolean createUser(String phone, String secret, Set<String> authorities);
 
-    boolean updateSecret(String phone, String secret);
+    User updateSecret(String phone, String secret);
 
 }
 
