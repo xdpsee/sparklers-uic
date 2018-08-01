@@ -52,7 +52,7 @@ public class UserRepositoryImpl implements UserRepository {
     public boolean createUser(String phone, String secret, Set<String> authorities) {
         int rows = context.insertInto(USER)
                 .set(USER.PHONE, phone)
-                .set(USER.SECRET, secret)
+                .set(USER.SECRET, passwordEncoder.encode(secret))
                 .set(USER.NAME, "")
                 .set(USER.AVATAR, "")
                 .set(USER.AUTHORITIES, String.join(",", authorities))

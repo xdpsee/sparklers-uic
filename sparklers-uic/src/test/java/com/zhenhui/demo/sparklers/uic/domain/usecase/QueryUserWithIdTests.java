@@ -11,6 +11,7 @@ import com.zhenhui.demo.sparklers.uic.domain.repository.CaptchaRepository;
 import com.zhenhui.demo.sparklers.uic.domain.repository.UserRepository;
 import com.zhenhui.demo.sparklers.uic.utils.CaptchaUtil;
 import io.reactivex.observers.TestObserver;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,18 +28,8 @@ public class QueryUserWithIdTests extends TestBase {
     @Autowired
     private CaptchaRepository captchaRepository;
 
-    @Test
-    public void testUserAbsent() {
-        QueryUserWithId queryUserWithId = new QueryUserWithId(null, null, userRepository);
-
-        TestObserver<Optional<User>> testObserver = new TestObserver<>();
-        queryUserWithId.execute(1L, testObserver);
-
-        testObserver.assertResult(Optional.empty()).assertComplete();
-    }
-
-    @Test
-    public void testUserExist() throws Exception {
+    @Before
+    public void setup() throws Exception {
 
         TestObserver<Boolean> createUserObserver = new TestObserver<>();
 
@@ -47,6 +38,21 @@ public class QueryUserWithIdTests extends TestBase {
         Captcha captcha = captchaRepository.createCaptcha("13402022080");
         createUser.execute(new Params("13402022080", "12345678", Sets.newHashSet("USER"), captcha.getCode()), createUserObserver);
         createUserObserver.assertResult(true).assertComplete();
+
+    }
+
+    @Test
+    public void testUserAbsent() {
+        QueryUserWithId queryUserWithId = new QueryUserWithId(null, null, userRepository);
+
+        TestObserver<Optional<User>> testObserver = new TestObserver<>();
+        queryUserWithId.execute(10000000L, testObserver);
+
+        testObserver.assertResult(Optional.empty()).assertComplete();
+    }
+
+    @Test
+    public void testUserExist() {
 
         User user = userRepository.getUser("13402022080");
         assertNotNull(user);

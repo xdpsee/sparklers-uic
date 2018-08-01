@@ -9,6 +9,7 @@ import org.springframework.dao.DuplicateKeyException;
 public class ExceptionUtils {
 
     private static final String DUPLICATION_ENTRY = "Duplicate entry";
+    private static final String UNIQUE_KEYWORD = "Unique index or primary key";
 
     public static String getStackTrace(Throwable aThrowable) {
         if (null != aThrowable) {
@@ -23,16 +24,16 @@ public class ExceptionUtils {
 
     public static boolean hasDuplicateEntryException(Throwable e) {
 
-        if (e instanceof DuplicateKeyException && e.getMessage().contains(DUPLICATION_ENTRY)) {
+        if (e instanceof DuplicateKeyException && (e.getMessage().contains(DUPLICATION_ENTRY) || e.getMessage().contains(UNIQUE_KEYWORD))) {
             return true;
         }
 
-        if (e.getCause() != null && e.getCause().getMessage().contains(DUPLICATION_ENTRY)) {
+        if (e.getCause() != null && (e.getCause().getMessage().contains(DUPLICATION_ENTRY) || e.getCause().getMessage().contains(UNIQUE_KEYWORD))) {
             return true;
         }
 
         return e.getCause() != null
-            && e.getCause().getMessage().contains(DUPLICATION_ENTRY);
+            && (e.getCause().getMessage().contains(DUPLICATION_ENTRY) || e.getCause().getMessage().contains(UNIQUE_KEYWORD));
 
     }
 

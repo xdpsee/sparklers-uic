@@ -46,17 +46,17 @@ public class CreateUserTests extends TestBase {
         CreateUser createUser = new CreateUser(null, null, userRepository, captchaUtil);
 
 
-        Captcha captcha = captchaRepository.createCaptcha("18621816230");
-        createUser.execute(new Params("18621816230", "12345678",Sets.newHashSet("USER"), captcha.getCode()), testObserver);
+        Captcha captcha = captchaRepository.createCaptcha("18621816231");
+        createUser.execute(new Params("18621816231", "12345678",Sets.newHashSet("USER"), captcha.getCode()), testObserver);
 
         testObserver.assertResult(true).assertComplete();
 
         // again
         final TestObserver<Boolean> testObserver2 = new TestObserver<>();
 
-        Captcha captcha2 = captchaRepository.createCaptcha("18621816230");
+        Captcha captcha2 = captchaRepository.createCaptcha("18621816231");
 
-        createUser.execute(new Params("18621816230", "12345678",Sets.newHashSet("USER"), captcha2.getCode()), testObserver2);
+        createUser.execute(new Params("18621816231", "12345678",Sets.newHashSet("USER"), captcha2.getCode()), testObserver2);
 
         testObserver2.assertError(UserAlreadyExistException.class);
 

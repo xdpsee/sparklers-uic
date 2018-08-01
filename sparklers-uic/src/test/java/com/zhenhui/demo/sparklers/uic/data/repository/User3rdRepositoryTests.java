@@ -29,20 +29,20 @@ public class User3rdRepositoryTests extends TestBase {
 
     @Test
     public void testDuplicate() {
-        User3rd user3rd = new User3rd(SocialType.WEIBO, "1", "", "", 1L);
+        User3rd user3rd = new User3rd(SocialType.WEIBO, "2", "", "", 1L);
         user3rdRepository.create3rdUser(user3rd);
 
-        user3rd = new User3rd(SocialType.WEIBO, "1", "", "", 1L);
+        user3rd = new User3rd(SocialType.WEIBO, "2", "", "", 1L);
         user3rdRepository.create3rdUser(user3rd);
     }
 
     @Test
     public void testGet3rdUser() {
 
-        User3rd user3rd = new User3rd(SocialType.WEIBO, "1", "", "", 1L);
+        User3rd user3rd = new User3rd(SocialType.WEIBO, "3", "", "", 1000L);
         user3rdRepository.create3rdUser(user3rd);
 
-        List<User3rd> user3rds = user3rdRepository.get3rdUsers(1);
+        List<User3rd> user3rds = user3rdRepository.get3rdUsers(1000);
 
         assertEquals(1, user3rds.size());
 
