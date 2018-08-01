@@ -32,19 +32,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .exceptionHandling()
+                .csrf().disable()
+                .exceptionHandling()
                 .accessDeniedHandler(new AccessDeniedHandlerImpl())
                 .authenticationEntryPoint(new HTTP403ForbiddenEntryPoint())
-            .and()
-            .sessionManagement()
+                .and()
+                .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-            .authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/auth/token", "auth/token/captcha", "/captcha", "/auth/weibo", "/auth/weibo/bind")
+                .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/auth/token", "auth/token/captcha", "/captcha", "/auth/weibo", "/auth/weibo/bind")
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/user")
                 .permitAll()
-            .anyRequest()
+                .anyRequest()
                 .authenticated();
 
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);

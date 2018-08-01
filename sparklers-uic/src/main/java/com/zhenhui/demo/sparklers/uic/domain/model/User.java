@@ -1,5 +1,6 @@
 package com.zhenhui.demo.sparklers.uic.domain.model;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,13 +14,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     private long id;
+
     @JsonIgnore
     private String phone;
 
     private String name;
+
     @JsonIgnore
     private String secret;
 
