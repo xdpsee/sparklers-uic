@@ -1,6 +1,5 @@
 package com.zhenhui.demo.sparklers.uic;
 
-import com.zhenhui.demo.sparklers.uic.Application;
 import org.apache.curator.test.TestingServer;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
