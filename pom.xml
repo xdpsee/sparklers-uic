@@ -5,13 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.zhenhui.demo</groupId>
-    <artifactId>sparklers-uic-parent</artifactId>
+    <artifactId>sparkler-uic</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>uic-common</module>
-        <module>sparklers-uic</module>
+        <module>uic-api</module>
+        <module>uic-security</module>
+        <module>uic-webapi</module>
     </modules>
 
     <dependencyManagement>
@@ -19,7 +20,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.0.4.RELEASE</version>
+                <version>2.1.1.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
