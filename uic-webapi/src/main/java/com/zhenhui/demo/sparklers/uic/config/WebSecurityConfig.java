@@ -34,10 +34,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         , "/captcha"
                         , "/auth/weibo"
                         , "/auth/weibo/bind"
-                        , "/service/**"
-                        , "/favicon.ico")
+                        , "/service/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/actuator/**", "/service/**").permitAll()
+                .antMatchers(HttpMethod.GET
+                        , "/favicon.ico"
+                        , "/actuator/**"
+                        , "/service/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user")
                 .permitAll()
                 .anyRequest()
