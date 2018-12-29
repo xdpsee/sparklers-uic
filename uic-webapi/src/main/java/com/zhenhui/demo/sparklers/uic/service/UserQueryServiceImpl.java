@@ -1,6 +1,5 @@
 package com.zhenhui.demo.sparklers.uic.service;
 
-import com.alibaba.dubbo.config.annotation.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Collections2;
 import com.zhenhui.demo.sparklers.uic.domain.model.User;
@@ -14,6 +13,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,8 +24,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection,unused")
-@Service(interfaceClass = UserQueryService.class)
-@Component
+@RestController
 public class UserQueryServiceImpl implements UserQueryService {
 
     @Autowired
@@ -33,6 +33,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     private UserRepository userRepository;
 
     @Override
+    @ResponseBody
     public UserDto queryUser(long userId) {
         UserDto user = userCache.get(userId);
         if (null == user) {
@@ -48,6 +49,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
+    @ResponseBody
     public Map<Long, UserDto> queryUsers(Collection<Long> userIds) {
 
         if (CollectionUtils.isEmpty(userIds)) {

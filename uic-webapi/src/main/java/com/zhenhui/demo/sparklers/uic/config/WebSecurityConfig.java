@@ -28,8 +28,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/auth/token", "auth/token/captcha", "/captcha", "/auth/weibo", "/auth/weibo/bind")
+                .antMatchers(HttpMethod.POST
+                        , "/auth/token"
+                        , "auth/token/captcha"
+                        , "/captcha"
+                        , "/auth/weibo"
+                        , "/auth/weibo/bind"
+                        , "/service/**"
+                        , "/favicon.ico")
                 .permitAll()
+                .antMatchers(HttpMethod.GET, "/actuator/**", "/service/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user")
                 .permitAll()
                 .anyRequest()
