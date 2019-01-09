@@ -25,8 +25,8 @@ public class User3rdRepositoryImpl implements User3rdRepository {
 
     @Caching(
             evict = {
-                    @CacheEvict(cacheNames = "user3rd", key = "#user3rd.type+#user3rd.openId"),
-                    @CacheEvict(cacheNames = "user3rd", key = "#user3rd.userId")
+                    @CacheEvict(cacheNames = "3users", key = "#user3rd.type+#user3rd.openId"),
+                    @CacheEvict(cacheNames = "3users", key = "#user3rd.userId")
 
             }
     )
@@ -48,7 +48,7 @@ public class User3rdRepositoryImpl implements User3rdRepository {
         }
     }
 
-    @Cacheable(cacheNames = "user3rd", key = "#type+#openId")
+    @Cacheable(cacheNames = "3users", key = "#type+#openId", unless = "#result==null")
     @Override
     public User3rd get3rdUser(SocialType type, String openId) {
 
@@ -64,7 +64,7 @@ public class User3rdRepositoryImpl implements User3rdRepository {
         return new User3rd(SocialType.valueOf(record.getType()), record.getOpenId(), record.getNickname(), record.getAvatar(), record.getUserId());
     }
 
-    @Cacheable(cacheNames = "user3rd", key = "#userId")
+    @Cacheable(cacheNames = "3users", key = "#userId", unless = "#result==null")
     @Override
     public List<User3rd> get3rdUsers(long userId) {
 

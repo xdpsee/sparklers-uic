@@ -19,8 +19,8 @@ public enum SocialType {
 
     public static SocialType valueOf(final int code) {
         return Arrays.stream(values())
-            .filter(e -> e.code == code)
-            .findAny()
-            .orElseThrow(IllegalArgumentException::new);
+                .filter(e -> e.code == code)
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

@@ -1,6 +1,6 @@
 package com.zhenhui.demo.sparklers.uic;
 
-import org.apache.curator.test.TestingServer;
+import com.zhenhui.demo.sparklers.uic.bootstrap.Application;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -17,19 +17,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class TestBase {
 
 
-    private static TestingServer zooKeeperServer;
 
     @BeforeClass
     public static void setupBeforeClass() throws Exception {
-        zooKeeperServer = new TestingServer(12181);
-        zooKeeperServer.start();
 
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        zooKeeperServer.stop();
-        zooKeeperServer = null;
     }
 
     @Test

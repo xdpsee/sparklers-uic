@@ -36,8 +36,8 @@ public class SecurityAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request
-        , HttpServletResponse response
-        , FilterChain chain) throws ServletException, IOException {
+            , HttpServletResponse response
+            , FilterChain chain) throws ServletException, IOException {
 
         final String token = parseToken(request);
         if (token != null && !securityBlacklistService.isBlocked(token)) {

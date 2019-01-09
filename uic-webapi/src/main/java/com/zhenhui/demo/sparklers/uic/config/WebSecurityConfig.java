@@ -38,12 +38,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(HttpMethod.GET
                         , "/favicon.ico"
-                        , "/actuator/**"
-                        , "/service/**").permitAll()
+                        , "/error"
+                        , "/actuator/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user")
                 .permitAll()
                 .anyRequest()
-                .authenticated();
+                .permitAll();
 
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

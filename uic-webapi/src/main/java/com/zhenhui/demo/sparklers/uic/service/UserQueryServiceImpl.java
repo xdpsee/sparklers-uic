@@ -1,5 +1,6 @@
 package com.zhenhui.demo.sparklers.uic.service;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Collections2;
 import com.zhenhui.demo.sparklers.uic.domain.model.User;
@@ -13,18 +14,17 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection,unused")
-@RestController
+@Service(version = "1.0.0")
 public class UserQueryServiceImpl implements UserQueryService {
 
     @Autowired
@@ -33,15 +33,14 @@ public class UserQueryServiceImpl implements UserQueryService {
     private UserRepository userRepository;
 
     @Override
-    @ResponseBody
-    public UserDto queryUser(long userId) {
-        UserDto user = userCache.get(userId);
+    public UserDto queryUser(long id) {
+        UserDto user = userCache.get(id);
         if (null == user) {
-            User u = userRepository.getUser(userId);
+            User u = userRepository.getUser(id);
             if (u != null) {
                 user = new UserDto();
                 BeanUtils.copyProperties(u, user);
-                userCache.put(userId, user);
+                userCache.put(id, user);
             }
         }
 
@@ -49,8 +48,7 @@ public class UserQueryServiceImpl implements UserQueryService {
     }
 
     @Override
-    @ResponseBody
-    public Map<Long, UserDto> queryUsers(Collection<Long> userIds) {
+    public Map<Long, UserDto> queryUsers(Set<Long> userIds) {
 
         if (CollectionUtils.isEmpty(userIds)) {
             return new HashMap<>();

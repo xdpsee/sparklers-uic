@@ -19,7 +19,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityAuthenticationFilter authenticationFilter(@Value("jwt.http-header") String authHeader
+    public SecurityAuthenticationFilter authenticationFilter(@Value("${jwt.http-header}") String authHeader
             , @Autowired SecurityTokenProducer tokenProducer
             , @Autowired SecurityBlacklistService securityBlacklistService) {
         return new SecurityAuthenticationFilter(authHeader

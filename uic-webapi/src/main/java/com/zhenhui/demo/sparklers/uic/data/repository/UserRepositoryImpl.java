@@ -29,7 +29,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Cacheable(cacheNames = "user", key = "#userId") // userId
+    @Cacheable(cacheNames = "users", key = "#userId", unless = "#result==null") // userId
     @Override
     public User getUser(long userId) {
 
@@ -41,7 +41,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    @Cacheable(cacheNames = "user", key = "#phone") // phone
+    @Cacheable(cacheNames = "users", key = "#phone", unless = "#result==null") // phone
     public User getUser(String phone) {
         final UserRecord record = context.selectFrom(Tables.USER)
                 .where(Tables.USER.PHONE.eq(phone))
@@ -51,7 +51,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    @Cacheable(cacheNames = "user", keyGenerator = "userIdsKeyGenerator") // phone
+    @Cacheable(cacheNames = "users", keyGenerator = "userIdsKeyGenerator", unless = "#result.isEmpty()")
     public Collection<User> getUsers(Collection<Long> userIds) {
         final List<UserRecord> records = context.selectFrom(Tables.USER)
                 .where(Tables.USER.ID.in(userIds))
@@ -74,8 +74,8 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Caching(
             evict = {
-                    @CacheEvict(cacheNames = "user", key = "#phone"),
-                    @CacheEvict(cacheNames = "user", key = "#result.id", condition = "#result!=null"),
+                    @CacheEvict(cacheNames = "users", key = "#phone"),
+                    @CacheEvict(cacheNames = "users", key = "#result.id", condition = "#result!=null"),
             }
     )
     @Transactional(rollbackFor = Exception.class)
@@ -109,7 +109,7 @@ public class UserRepositoryImpl implements UserRepository {
         return null;
     }
 
-    @Component
+    @Component("userIdsKeyGenerator")
     public static class UserIdsKeyGenerator implements KeyGenerator {
 
         @Override
@@ -117,8 +117,9 @@ public class UserRepositoryImpl implements UserRepository {
 
             Collection<Long> userIds = (Collection<Long>) objects[0];
 
-            return StringUtils.join(userIds, ",");
+            return "s-" + StringUtils.join(userIds, ",");
         }
     }
 }
+
 
